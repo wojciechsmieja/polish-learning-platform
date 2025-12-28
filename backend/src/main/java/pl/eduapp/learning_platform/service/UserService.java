@@ -9,6 +9,7 @@ import pl.eduapp.learning_platform.entity.User;
 import pl.eduapp.learning_platform.repository.UserRepository;
 
 import java.time.OffsetDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +48,16 @@ public class UserService {
         return user;
     }
     //TO DO: UPDATE USER
-
-
+    /*public User updateUser(RegisterRequest request) {
+        Optional<User> user = userRepository.findByUsername(request.getUsername());
+        if (request.getPassword()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+        if(request.getEmail()) {
+            user.setEmail(request.getEmail());
+        }
+        userRepository.save(user);
+        return user;
+    }
+*/
 }
