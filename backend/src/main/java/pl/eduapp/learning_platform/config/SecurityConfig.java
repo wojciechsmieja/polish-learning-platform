@@ -36,6 +36,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/register/**").permitAll()
+                        .requestMatchers("/api/tasks/public/**").permitAll()
+                        .requestMatchers("/api/tasks/my").authenticated()
+                        .requestMatchers("/api/tasks").authenticated()
+
                     .anyRequest().authenticated()
         )
                 .authenticationProvider(authenticationProvider())
