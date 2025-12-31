@@ -13,7 +13,7 @@ import pl.eduapp.learning_platform.service.UserService;
 
 @RestController
 @RequestMapping("/api/register")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
 public class UserController {
 

@@ -3,6 +3,7 @@ package pl.eduapp.learning_platform.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.eduapp.learning_platform.constant.TaskType;
 import pl.eduapp.learning_platform.dto.TaskRequestDTO;
 import pl.eduapp.learning_platform.dto.TaskResponseDTO;
@@ -60,7 +61,7 @@ public class TaskService {
         System.out.println("Saved task!!! ");
         return taskMapper.toDTO(savedTask);
     }
-
+    @Transactional(readOnly = true)
     public List<TaskResponseDTO> getUserTasks(String username){
         return taskRepository.findByCreatedByUsername(username)
                 .stream()

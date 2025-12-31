@@ -23,6 +23,7 @@ public class Task {
     private Long id;
     @Column(nullable = false)
     private String title;
+    @Column(nullable = false)
     private String description;
     @Enumerated(EnumType.STRING)
     @Column(name="task_type", nullable = false)
@@ -34,6 +35,8 @@ public class Task {
     private User createdBy;
     @Column(name="is_public", nullable=false)
     private Boolean publicTask;
+    @Column(name="syntax_type", nullable = false)
+    private String syntaxType;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TaskQuizDetail> quizDetails = new ArrayList<>();

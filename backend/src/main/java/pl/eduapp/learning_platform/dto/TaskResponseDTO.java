@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import pl.eduapp.learning_platform.constant.TaskType;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class TaskResponseDTO {
@@ -15,4 +17,8 @@ public class TaskResponseDTO {
     private Boolean publicTask;
     private Long createdById;
     private String createdByUsername;
+    private String syntaxType;
+    private List<TaskQuizDetailResponseDTO> quizDetails;
+    private List<TaskSentenceResponseDTO> sentenceDetails;
+    private List<TaskAnalysisDetailResponseDTO> analysisDetails;
 }

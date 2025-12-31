@@ -10,6 +10,7 @@ import pl.eduapp.learning_platform.service.AuthService;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class Logging {
     private final AuthService authService;
 
