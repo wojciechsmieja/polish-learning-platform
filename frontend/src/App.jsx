@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
+import PublicTasksByType from './components/PublicTasksByType';
+import TaskSolver from './components/TaskSolver';
 
 function App() {
     return (
@@ -10,7 +12,8 @@ function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
-                {/* Tutaj później dodasz trasę do zadań */}
+                <Route path="/public/:type" element={<PublicTasksByType/>}/>
+                <Route path="/tasks/:id" element={<TaskSolver/>}/>
             </Routes>
         </Router>
     );

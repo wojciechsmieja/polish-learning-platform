@@ -8,4 +8,8 @@ import lombok.Setter;
 public class TaskSentenceRequestDTO {
     private String sentence;
     private String coveredWords;
+    private String baseWord;
+    private String grammarHint;
+    private String explenation;
+    private Integer sentenceOrder;
 }

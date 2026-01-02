@@ -20,4 +20,5 @@ public interface TaskMapper {
     TaskQuizOptionResponseDTO toQuizOptionDTO(TaskQuizOption dto);
     TaskSentenceResponseDTO toSentenceDTO(TaskSentenceDetail dto);
     TaskAnalysisDetailResponseDTO toAnalysisDTO(TaskAnalysisDetail dto);
+    TaskShortResponse toShortDTO(Task dto);
 }

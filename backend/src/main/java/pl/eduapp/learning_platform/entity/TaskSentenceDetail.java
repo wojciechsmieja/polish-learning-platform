@@ -23,4 +23,12 @@ public class TaskSentenceDetail {
     private String sentence;
     @Column(name="covered_words",nullable = false)
     private String coveredWords;
+    @Column(name="base_word", nullable = false)
+    private String baseWord;
+    @Column(name="grammar_hint")
+    private String grammarHint;
+    @Column(name="sentence_order", nullable = false)
+    private Integer sentenceOrder;
+    @Column(name = "explenation", nullable = false)
+    private String explenation;
 }

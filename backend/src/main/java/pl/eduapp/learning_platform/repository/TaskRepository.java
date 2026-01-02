@@ -11,5 +11,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByPublicTaskTrue();
     List<Task> findByTaskType(TaskType taskType);
     List<Task> findByTaskTypeAndPublicTaskTrue(TaskType taskType);
+    Task findById(long id);
 }
 

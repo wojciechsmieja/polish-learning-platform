@@ -13,9 +13,9 @@ function Navbar() {
     return (
         <nav style={{ padding: '10px', borderBottom: '1px solid #ccc', display: 'flex', gap: '15px' }}>
             <Link to="/">Strona Główna</Link>
-            <Link to="/quiz">Quizy</Link>
-            <Link to="/completesentence">Uzupełnij Zdania</Link>
-            <Link to="/analysis">Analiza</Link>
+            <Link to="/public/QUIZ">Quizy</Link>
+            <Link to="/public/COMPLETE_SENTENCE">Uzupełnij Zdania</Link>
+            <Link to="/public/ANALYSIS">Analiza</Link>
             {!token ? (
                 <>
                     <Link to="/login">Logowanie</Link>

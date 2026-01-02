@@ -38,7 +38,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/register/**").permitAll()
                         .requestMatchers("/api/tasks/public/**").permitAll()
                         .requestMatchers("/api/tasks/my").authenticated()
-                        .requestMatchers("/api/tasks").authenticated()
+                        .requestMatchers("/api/tasks/**" +
+                                "").permitAll()
 
                     .anyRequest().authenticated()
         )

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.eduapp.learning_platform.constant.TaskType;
 import pl.eduapp.learning_platform.dto.TaskRequestDTO;
 import pl.eduapp.learning_platform.dto.TaskResponseDTO;
+import pl.eduapp.learning_platform.dto.TaskShortResponse;
 import pl.eduapp.learning_platform.service.TaskService;
 
 import java.security.Principal;
@@ -27,7 +28,13 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getUserTasks(principal.getName()));
     }
     @GetMapping("/public/{type}")
-    public ResponseEntity<List<TaskResponseDTO>> getPublicSpecifiedTasks(@PathVariable TaskType type){
+    public ResponseEntity<List<TaskShortResponse>> getPublicSpecifiedTasks(@PathVariable TaskType type){
+        //type = TaskType.valueOf(type.toString().toUpperCase());
         return ResponseEntity.ok(taskService.getTasksByTypeAndPublic(type));
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<TaskResponseDTO> getTaskById(@PathVariable Long id){
+        return ResponseEntity.ok(taskService.getTaskById(id));
+    }
+
 }

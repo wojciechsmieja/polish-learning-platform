@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.eduapp.learning_platform.constant.TaskType;
 import pl.eduapp.learning_platform.dto.TaskRequestDTO;
 import pl.eduapp.learning_platform.dto.TaskResponseDTO;
+import pl.eduapp.learning_platform.dto.TaskShortResponse;
 import pl.eduapp.learning_platform.entity.*;
 import pl.eduapp.learning_platform.mapper.TaskMapper;
 import pl.eduapp.learning_platform.repository.TaskRepository;
@@ -83,11 +84,16 @@ public class TaskService {
                 .toList();
 
     }
-    public List<TaskResponseDTO> getTasksByTypeAndPublic(TaskType taskType){
+    public List<TaskShortResponse> getTasksByTypeAndPublic(TaskType taskType){
         return taskRepository.findByTaskTypeAndPublicTaskTrue(taskType)
                 .stream()
-                .map(taskMapper::toDTO)
+                .map(taskMapper::toShortDTO)
                 .toList();
-
+    }
+    @Transactional(readOnly = true)
+    public TaskResponseDTO getTaskById(Long id){
+        Task task =  taskRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Task not found while trying to get the task"));
+        return taskMapper.toDTO(task);
     }
 }

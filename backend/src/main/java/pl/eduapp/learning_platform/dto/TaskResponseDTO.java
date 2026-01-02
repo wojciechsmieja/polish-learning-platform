@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class TaskResponseDTO {
-    private Integer id;
+    private Long id;
     private String title;
     private String description;
     private TaskType taskType;
