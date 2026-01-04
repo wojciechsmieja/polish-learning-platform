@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
-
-function QuizSolver({ data }) {
+import api from '../../api';
+function QuizSolver({ data, taskId }) {
     const [userAnswers, setUserAnswers] = useState({});
     const [results, setResults] = useState(null);
+    const [startTime] = useState(Date.now());
 
     const handleOptionChange = (questionId, optionId) => {
         setUserAnswers({ ...userAnswers, [questionId]: optionId });
     };
 
-    const checkQuiz = () => {
+    const checkQuiz = async () => {
         const newResults = {};
         data.forEach((question) => {
             const selectedOptionId = userAnswers[question.id];
@@ -21,6 +22,24 @@ function QuizSolver({ data }) {
             }
         });
         setResults(newResults);
+        try{
+            const endTime = Date.now();
+            const timeSpentSeconds = Math.floor((endTime-startTime)/1000);
+            const payload = {
+                taskId: taskId,
+                answers: userAnswers,
+                timeSpentSeconds: timeSpentSeconds
+            };
+            const response = await api.post('/api/progress/submit', payload);
+            const {scorePercentage, stars, pointsEarned, isLevelUp} = response.data;
+            alert(`Zadanie zakończone! \nWynik: ${scorePercentage}% \nGwiazdki: ${stars} \nXP: +${pointsEarned}`);
+            if(isLevelUp){
+                alert("Gratulacje! Awansowałeś/aś na nowy poziom.");
+            }
+        }catch (error){
+            console.error("Błąd podczas wysyłania wyniku: ", error);
+            alert("Nie udało się zapisać postepów");
+        }
     };
     const isChecked = results !== null;
     const getOptionColor = (opt, qId) => {

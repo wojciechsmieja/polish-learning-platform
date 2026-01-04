@@ -1,6 +1,8 @@
 import React from "react";
 import { useState, useEffect } from 'react';
+import api from '../../api';
 function SentenceSolver({data}){
+
     useEffect(()=>{
         console.log("Dane: ", data);
     },[data]);
@@ -26,6 +28,22 @@ function SentenceSolver({data}){
         });
         setResults(newResults);
         console.log("wyniki: ", newResults);
+        try{
+            const payload = {
+                taskId: taskId,
+                answers: userAnswers
+            };
+            //const response = await api.post('/api/progress/submit', payload);
+            alert(`Gratulacje! Zdobyłeś/aś: ${response.data.pointsAwarded} punktów!`);
+
+            if(response.data.newBadge){
+                alert(`Odblokowałeś/aś nową odznakę: ${response.data.newBadge.name}!`);
+            }
+
+        }catch (error){
+            console.error("Błąd zapisu postępu", error);
+        }
+
     };
     return (
        <div style={{ padding: '20px', lineHeight: '2.5' }}>

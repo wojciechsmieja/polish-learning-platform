@@ -17,6 +17,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -29,6 +34,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(Customizer.withDefaults())
                 .csrf(customizer->customizer.disable())
                 .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -38,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/register/**").permitAll()
                         .requestMatchers("/api/tasks/public/**").permitAll()
                         .requestMatchers("/api/tasks/my").authenticated()
+                        .requestMatchers("/api/progress/**").authenticated()
                         .requestMatchers("/api/tasks/**" +
                                 "").permitAll()
 
@@ -65,6 +72,26 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        // Pozwalamy na Twoją aplikację React
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+
+        // Pozwalamy na wszystkie metody HTTP (GET, POST, PUT, DELETE, OPTIONS)
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        // Pozwalamy na wszystkie nagłówki (w tym Authorization dla tokena JWT)
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
+
+        // Pozwalamy na przesyłanie ciasteczek/autoryzacji
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
 
 }

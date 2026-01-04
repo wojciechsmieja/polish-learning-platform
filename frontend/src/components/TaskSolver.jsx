@@ -31,7 +31,7 @@ function TaskSolver() {
     const renderSolver = () => {
         switch (task.taskType) {
             case 'QUIZ':
-                return <QuizSolver data={task.quizDetails} />;
+                return <QuizSolver data={task.quizDetails} taskId={task.id}/>;
             case 'COMPLETE_SENTENCE':
                 return <SentenceSolver data={task.sentenceDetails} />;
             case 'ANALYSIS':
