@@ -31,11 +31,17 @@ function QuizSolver({ data, taskId }) {
                 timeSpentSeconds: timeSpentSeconds
             };
             const response = await api.post('/api/progress/submit', payload);
-            const {scorePercentage, stars, pointsEarned, isLevelUp} = response.data;
-            alert(`Zadanie zakończone! \nWynik: ${scorePercentage}% \nGwiazdki: ${stars} \nXP: +${pointsEarned}`);
+            const {scorePercentage, stars, pointsEarned, isLevelUp, newBadges} = response.data;
+            let message = `Zadanie zakończone! \nWynik: ${scorePercentage}% \nGwiazdki: ${stars} \nXP: +${pointsEarned}`;
             if(isLevelUp){
-                alert("Gratulacje! Awansowałeś/aś na nowy poziom.");
+                message += "Gratulacje! Awansowałeś/aś na nowy poziom.";
             }
+            if(newBadges && newBadges.length>0){
+                message += `\n\nZdobyte nowe odznaki:\n- ${newBadges.join('\n- ')}`;
+            }
+            console.log(response.data);
+            alert(message);
+            console.log(message);
         }catch (error){
             console.error("Błąd podczas wysyłania wyniku: ", error);
             alert("Nie udało się zapisać postepów");

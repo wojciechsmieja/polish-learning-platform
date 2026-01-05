@@ -23,6 +23,7 @@ public class ProgressService {
     private final UserTaskAttemptRepository userTaskAttempRepository;
     private final UserRepository userRepository;
     private final UserProfileRepository userProfileRepository;
+    private final AchievementService achievementService;
 
     @Transactional
     public TaskResultResponse submitTask(TaskSubmissionDTO submission, String username){
@@ -32,6 +33,10 @@ public class ProgressService {
         double score = calculateScore(task, submission.getAnswers());
         int stars = calculateStars(score);
         int earnedPoints = (int)(task.getDifficulty() *100*(score/100.0));
+        //get profile
+        UserProfile profileBefore = userProfileRepository.findById(user.getId())
+                .orElseThrow(()->new RuntimeException("User not found"));
+        int oldLevel = profileBefore.getLevel();
 
         //save attemp
         UserTaskAttempt attemp = new UserTaskAttempt();
@@ -45,9 +50,15 @@ public class ProgressService {
         attemp.setCompleted(score == 100);
         userTaskAttempRepository.save(attemp);
 
-        boolean isLevelUp = updateUserProfile(user, stars, score, earnedPoints);
+        //udpate profile and get updated object
+        UserProfile updatedProfile = updateUserProfile(user, stars, score, earnedPoints);
 
-        return new TaskResultResponse(score, stars, earnedPoints, score==100.0, isLevelUp);
+        boolean isLevelUp = updatedProfile.getLevel() > oldLevel;
+
+        List<Achievement> newBadges = achievementService.checkAndAward(user, attemp, updatedProfile);
+
+        return new TaskResultResponse(score, stars, earnedPoints, score==100.0, isLevelUp,
+                newBadges.stream().map(Achievement::getName).toList());
 
     }
 
@@ -104,16 +115,15 @@ public class ProgressService {
         return 0;
     }
 
-    private boolean updateUserProfile(User user, int stars, double score, int earnedPoints){
+    private UserProfile updateUserProfile(User user, int stars, double score, int earnedPoints){
         //update userprofile
         UserProfile profile = userProfileRepository.findByUser(user)
                 .orElseThrow(()->new RuntimeException("Profile not found"));
         profile.setTotalPoints(profile.getTotalPoints() + earnedPoints);
         profile.setTotalStars(profile.getTotalStars() + stars);
-        int oldLevel = profile.getLevel();
         int newLevel = (int)(profile.getTotalPoints()/1000)+1;
         profile.setLevel(newLevel);
-        userProfileRepository.save(profile);
-        return newLevel > oldLevel;
+        return userProfileRepository.save(profile);
+
     }
 }
