@@ -33,7 +33,7 @@ function TaskSolver() {
             case 'QUIZ':
                 return <QuizSolver data={task.quizDetails} taskId={task.id}/>;
             case 'COMPLETE_SENTENCE':
-                return <SentenceSolver data={task.sentenceDetails} />;
+                return <SentenceSolver data={task.sentenceDetails} taskId={task.id}/>;
             case 'ANALYSIS':
                 return <AnalysisSolver data={task.analysisDetails} />;
             default:

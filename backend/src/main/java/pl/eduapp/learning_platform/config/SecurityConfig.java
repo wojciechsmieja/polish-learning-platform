@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/tasks/public/**").permitAll()
                         .requestMatchers("/api/tasks/my").authenticated()
                         .requestMatchers("/api/progress/**").authenticated()
+                        .requestMatchers("/api/profile/**").authenticated()
                         .requestMatchers("/api/tasks/**" +
                                 "").permitAll()
 
@@ -80,7 +81,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of("http://localhost:5173"));
 
         // Pozwalamy na wszystkie metody HTTP (GET, POST, PUT, DELETE, OPTIONS)
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 
         // Pozwalamy na wszystkie nagłówki (w tym Authorization dla tokena JWT)
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));

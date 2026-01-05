@@ -12,6 +12,7 @@ import pl.eduapp.learning_platform.entity.*;
 import pl.eduapp.learning_platform.mapper.TaskMapper;
 import pl.eduapp.learning_platform.repository.TaskRepository;
 import pl.eduapp.learning_platform.repository.UserRepository;
+import pl.eduapp.learning_platform.repository.UserTaskAttemptRepository;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
     private final UserRepository userRepository;
+    private final UserTaskAttemptRepository userTaskAttemptRepository;
 
     private void validateTask(TaskRequestDTO taskRequestDTO) {
         if(taskRequestDTO.getTaskType()==TaskType.QUIZ && (taskRequestDTO.getQuizDetails()==null || taskRequestDTO.getQuizDetails().isEmpty())){
@@ -84,12 +86,27 @@ public class TaskService {
                 .toList();
 
     }
-    public List<TaskShortResponse> getTasksByTypeAndPublic(TaskType taskType){
-        return taskRepository.findByTaskTypeAndPublicTaskTrue(taskType)
-                .stream()
-                .map(taskMapper::toShortDTO)
-                .toList();
+    public List<TaskShortResponse> getTasksByTypeAndPublic(TaskType taskType, String username) {
+        //get tasks
+        List<Task> tasks = taskRepository.findByTaskTypeAndPublicTaskTrue(taskType);
+        //get user
+        User user = (username != null) ? userRepository.findByUsername(username).orElse(null) :null;
+        return tasks.stream().map(task -> {
+            TaskShortResponse dto = taskMapper.toShortDTO(task);
+
+            if (user != null) {
+                Integer maxStars = userTaskAttemptRepository.findMaxStarsByUserAndTask(user, task);
+                dto.setUserStars(maxStars);
+                boolean completed = userTaskAttemptRepository.existsByUserAndTaskAndCompletedTrue(user, task);
+                dto.setCompleted(completed);
+            } else {
+                dto.setUserStars(0);
+                dto.setCompleted(false);
+            }
+            return dto;
+        }).toList();
     }
+
     @Transactional(readOnly = true)
     public TaskResponseDTO getTaskById(Long id){
         Task task =  taskRepository.findById(id)

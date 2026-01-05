@@ -16,4 +16,6 @@ public class TaskShortResponse {
     private Long createdById;
     private String createdByUsername;
     private String syntaxType;
+    private Integer userStars;
+    private boolean completed;
 }

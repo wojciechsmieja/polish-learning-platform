@@ -1,62 +1,76 @@
 import React from "react";
 import { useState, useEffect } from 'react';
 import api from '../../api';
-function SentenceSolver({data}){
+function SentenceSolver({data, taskId}){
 
     useEffect(()=>{
         console.log("Dane: ", data);
     },[data]);
     console.log(data);
     const [userAnswers, setUserAnswers] = useState({});
-    const [results, setResults] = useState(false);  
-    const handleInputChange = (index, value) => {
-        setUserAnswers({
-            ...userAnswers,
-            [index]: value
-        });
+    const [results, setResults] = useState(null);
+    const [startTime, setStartTime] = useState(Date.now());  
+    const handleInputChange = (id, value) => {
+        setUserAnswers(prev =>({
+            ...prev,
+            [id]: value
+        }));
     };
-    const checkAnswers = () => {
+
+    const checkAnswers = async() => {
         const newResults = {};
-        data.forEach((item, index) => {
-            const userAns = (userAnswers[index] || "").trim().toLowerCase();
+        data.forEach((item) => {
+            const userAns = (userAnswers[item.id] || "").trim().toLowerCase();
             const correctAns = item.coveredWords.trim().toLowerCase();
             if(userAns===correctAns){
-                newResults[index] = true;
+                newResults[item.id] = true;
             }else{
-                newResults[index] = false;
+                newResults[item.id] = false;
             }
         });
         setResults(newResults);
         console.log("wyniki: ", newResults);
+        console.log("odpowiedzi", userAnswers);
+
         try{
+            const endTime = Date.now();
+            const timeSpent = Math.floor((endTime-startTime)/1000);
             const payload = {
                 taskId: taskId,
-                answers: userAnswers
+                answers: userAnswers,
+                timeSpentSeconds:timeSpent
             };
-            //const response = await api.post('/api/progress/submit', payload);
-            alert(`Gratulacje! Zdobyłeś/aś: ${response.data.pointsAwarded} punktów!`);
-
-            if(response.data.newBadge){
-                alert(`Odblokowałeś/aś nową odznakę: ${response.data.newBadge.name}!`);
+            console.log("payload", payload);
+            const response = await api.post('/api/progress/submit', payload);
+            const {scorePercentage, stars, pointsEarned, isLevelUp, newBadges} = response.data;
+            let message = `Zadanie zakończone! \nWynik: ${scorePercentage}% \nGwiazdki: ${stars} \nXP: +${pointsEarned}`;
+            if(isLevelUp){
+                message += "Gratulacje! Awansowałeś/aś na nowy poziom.";
             }
-
+            if(newBadges && newBadges.length>0){
+                message += `\n\nZdobyte nowe odznaki:\n- ${newBadges.join('\n- ')}`;
+            }
+            alert(message);
         }catch (error){
             console.error("Błąd zapisu postępu", error);
         }
-
     };
+    const isChecked = results !== null;
+    
+    console.log(isChecked);
     return (
        <div style={{ padding: '20px', lineHeight: '2.5' }}>
-            {data.map((item, index) => {
+            {data.map((item) => {
                 const parts = item.sentence.split(/_{2,}/);
-                const correct = results ? results[index] : null;
+                const correct = results ? results[item.id] : null;
                 return (
-                    <div key={item.id || index} style={{ marginBottom: '20px', fontSize: '18px' }}>
+                    <div key={item.id} style={{ marginBottom: '20px', fontSize: '18px' }}>
                         <span>{parts[0]}</span>
                         <input
                             type="text"
-                            value={userAnswers[index] || ''}
-                            onChange={(e) => handleInputChange(index, e.target.value)}
+                            value={userAnswers[item.id] || ''}
+                            onChange={(e) => handleInputChange(item.id, e.target.value)}
+                            disabled={isChecked}
                             placeholder="wpisz..."
                             style={{
                                 border: 'none',
@@ -80,13 +94,21 @@ function SentenceSolver({data}){
                         )}
                     </div>
                 );
-            })}           
-            <button 
-                onClick={()=>checkAnswers()}
-                style={{ marginTop: '20px', padding: '10px 20px', cursor: 'pointer' }}
-            >
-                Sprawdź
-            </button>
+            })}       
+            <div style={{ marginTop: '20px' }}>   
+                {!isChecked ? (
+                    <button 
+                        onClick={()=>checkAnswers()}
+                        style={{ marginTop: '20px', padding: '10px 20px', cursor: 'pointer' }}
+                    >
+                        Sprawdź
+                    </button>
+                ):(
+                    <button onClick={() => { setResults(null); setUserAnswers({}); setStartTime(Date.now()); }}>
+                        Spróbuj ponownie
+                    </button>
+                )}
+            </div> 
         </div>
     );
 }

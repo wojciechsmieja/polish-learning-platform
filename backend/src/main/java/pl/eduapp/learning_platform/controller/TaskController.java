@@ -28,9 +28,9 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getUserTasks(principal.getName()));
     }
     @GetMapping("/public/{type}")
-    public ResponseEntity<List<TaskShortResponse>> getPublicSpecifiedTasks(@PathVariable TaskType type){
+    public ResponseEntity<List<TaskShortResponse>> getPublicSpecifiedTasks(@PathVariable TaskType type, Principal principal){
         //type = TaskType.valueOf(type.toString().toUpperCase());
-        return ResponseEntity.ok(taskService.getTasksByTypeAndPublic(type));
+        return ResponseEntity.ok(taskService.getTasksByTypeAndPublic(type, principal.getName()));
     }
     @GetMapping("/{id}")
     public ResponseEntity<TaskResponseDTO> getTaskById(@PathVariable Long id){

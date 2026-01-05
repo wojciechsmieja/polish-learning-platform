@@ -42,7 +42,15 @@ function PublicTasksByType() {
                         }}>
                             <h3>{task.title}</h3>
                             <p>{task.description}</p>
-                            <small>Trudność: {task.difficulty}/5 | Autor: {task.createdByUsername}</small>
+                            <small>Trudność: {task.difficulty}/3</small>
+                            <div className="stars">
+                                {[1, 2, 3].map(star => (
+                                    <span key={star} style={{ color: star <= task.userStars ? 'gold' : 'grey' }}>
+                                        ★
+                                    </span>
+                                ))}
+                            </div>
+                            {task.isCompleted && <span className="badge">ZALICZONE ✅</span>}
                             <br />
                             <Link to={`/tasks/${task.id}`}>
                                 <button style={{ marginTop: '10px' }}>Rozwiąż</button>

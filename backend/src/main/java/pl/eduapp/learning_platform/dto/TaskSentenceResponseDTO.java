@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TaskSentenceResponseDTO {
+    private Long id;
     private String sentence;
     private String coveredWords;
     private String baseWord;

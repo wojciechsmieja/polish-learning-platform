@@ -3,10 +3,10 @@ import api from '../../api';
 function QuizSolver({ data, taskId }) {
     const [userAnswers, setUserAnswers] = useState({});
     const [results, setResults] = useState(null);
-    const [startTime] = useState(Date.now());
+    const [startTime, setStartTime] = useState(Date.now());
 
     const handleOptionChange = (questionId, optionId) => {
-        setUserAnswers({ ...userAnswers, [questionId]: optionId });
+        setUserAnswers(prev => ({ ...prev, [questionId]: optionId }));
     };
 
     const checkQuiz = async () => {
@@ -57,7 +57,7 @@ function QuizSolver({ data, taskId }) {
     useEffect(()=>{
         console.log(results);
     },[results]);
-
+    console.log(isChecked);
     return (
          <div style={{ padding: '20px' }}>
             {data.map((q) => (
@@ -73,7 +73,9 @@ function QuizSolver({ data, taskId }) {
                             }}>
                                 <input 
                                     type="radio" 
-                                    name={`question-${q.id}`} 
+                                    name={`question-${q.id}`}
+                                    value = {opt.id}
+                                    checked={userAnswers[q.id] === opt.id} 
                                     onChange={() => handleOptionChange(q.id, opt.id)}
                                     disabled={isChecked}
                                 />
@@ -88,7 +90,7 @@ function QuizSolver({ data, taskId }) {
                 {!isChecked ? (
                     <button onClick={checkQuiz}>Sprawdź odpowiedzi</button>
                 ) : (
-                    <button onClick={() => { setResults(null); setUserAnswers({}); }}>
+                    <button onClick={() => { setResults(null); setUserAnswers({}); setStartTime(Date.now()); }}>
                         Spróbuj ponownie
                     </button>
                 )}

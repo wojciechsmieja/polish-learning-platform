@@ -24,42 +24,58 @@ public class ProgressService {
     private final UserRepository userRepository;
     private final UserProfileRepository userProfileRepository;
     private final AchievementService achievementService;
+    private final UserTaskAttemptRepository userTaskAttemptRepository;
 
     @Transactional
     public TaskResultResponse submitTask(TaskSubmissionDTO submission, String username){
         Task task = taskRepository.findById(submission.getTaskId()).orElseThrow();
         User user = userRepository.findByUsername(username).orElseThrow();
-
+        //current result
         double score = calculateScore(task, submission.getAnswers());
         int stars = calculateStars(score);
-        int earnedPoints = (int)(task.getDifficulty() *100*(score/100.0));
-        //get profile
-        UserProfile profileBefore = userProfileRepository.findById(user.getId())
-                .orElseThrow(()->new RuntimeException("User not found"));
-        int oldLevel = profileBefore.getLevel();
+        int points = (int)(task.getDifficulty() *100*(score/100.0));
+        //boolean wasAlreadyCompleted = userTaskAttempRepository.existsByUserAndTaskAndCompletedTrue(user, task);
+        //best stars so far
+        Integer bestStarsSoFar = userTaskAttemptRepository.findMaxStarsByUserAndTask(user, task);
+        if(bestStarsSoFar == null){bestStarsSoFar = 0;}
 
+        //best score so far
+        Double bestScoreSoFar = userTaskAttemptRepository.findMaxScoreByUserAndTask(user, task);
+        if(bestScoreSoFar == null){bestScoreSoFar = 0.0;}
+        //this stars we add to profile
+        int starsToAward = Math.max(0, stars-bestStarsSoFar);
+        //SAME WITH POINTS
+        int bestPointsSoFar = (int)(task.getDifficulty() *100*(bestScoreSoFar/100.0));
+        int pointsToAward = Math.max(0, points-bestPointsSoFar);
+
+        //get profile
+        UserProfile profile = userProfileRepository.findById(user.getId())
+                .orElseThrow(()->new RuntimeException("User not found"));
+        int oldLevel = profile.getLevel();
         //save attemp
         UserTaskAttempt attemp = new UserTaskAttempt();
         attemp.setUser(user);
         attemp.setTask(task);
         attemp.setScorePercentage(score);
         attemp.setStars(stars);
-        attemp.setPoints(earnedPoints);
+        attemp.setPoints(pointsToAward);
         attemp.setTimeSpent(Duration.ofSeconds(submission.getTimeSpentSeconds()));
         attemp.setCompletedAt(OffsetDateTime.now());
-        attemp.setCompleted(score == 100);
+        attemp.setCompleted(score == 100.0);
         userTaskAttempRepository.save(attemp);
 
-        //udpate profile and get updated object
-        UserProfile updatedProfile = updateUserProfile(user, stars, score, earnedPoints);
+        profile.setTotalStars(profile.getTotalStars() + starsToAward);
+        profile.setTotalPoints(profile.getTotalPoints() + pointsToAward);
+        int newLevel = (int)(profile.getTotalPoints()/1000 )+ 1;
+        profile.setLevel(newLevel);
+        userProfileRepository.save(profile);
 
-        boolean isLevelUp = updatedProfile.getLevel() > oldLevel;
+        boolean isLevelUp = newLevel > oldLevel;
 
-        List<Achievement> newBadges = achievementService.checkAndAward(user, attemp, updatedProfile);
+        List<Achievement> newBadges = achievementService.checkAndAward(user, attemp, userProfileRepository.findByUser(user).get());
 
-        return new TaskResultResponse(score, stars, earnedPoints, score==100.0, isLevelUp,
+        return new TaskResultResponse(score, starsToAward, pointsToAward, score==100.0, isLevelUp,
                 newBadges.stream().map(Achievement::getName).toList());
-
     }
 
     private double calculateScore(Task task, Map<Long, String> userAnswers){
