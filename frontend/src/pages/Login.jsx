@@ -14,8 +14,6 @@ function Login() {
             
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('username', username);
-            
-            alert("Zalogowano pomyślnie!");
             navigate('/');
             window.location.reload(); 
         } catch (error) {
