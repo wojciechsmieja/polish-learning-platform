@@ -1,0 +1,13 @@
+.parentSentenceSolver{
+    padding: 20px;
+    line-height: 2.5;
+}
+.parentSentenceSolver p{
+    font-weight: 800;
+    font-size: 1.3em;
+}
+
+.sentenceMapped{
+    margin-bottom: 20px;
+    font-size: 18px; 
+}

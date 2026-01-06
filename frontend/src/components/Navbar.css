@@ -1,0 +1,25 @@
+.navbar{
+    position: fixed;
+    top:0;
+    left: 0;
+    width:100%;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ccc;
+
+    display: flex;
+    gap:15px;
+    align-items: center;
+
+    background-color: #11130f;
+    z-index: 100;
+
+    flex-wrap: nowrap;
+    box-sizing: border-box;
+}
+.stretchSpan{
+    flex-grow: 1;
+}
+.navbarElement {
+    padding-right: 10px;
+    border-right: 1px solid #eee;
+}

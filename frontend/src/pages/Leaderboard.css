@@ -1,0 +1,19 @@
+.parent{
+    padding: 20px;
+    max-width: 600px; 
+    margin: 0 auto 
+}
+th{
+    padding: 10px;
+}
+td{
+    padding:10px;
+    text-align: center;
+    border-bottom: 1px solid #fff;
+}
+.podium{
+    background-color: #724715;
+}
+h2{
+    font-size: 3em;
+}

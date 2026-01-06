@@ -21,11 +21,11 @@ public class Logging {
     }
 
     @PostMapping("/register/student")
-    public ResponseEntity<AuthResponse> registerStudent(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.registerStudent(request));
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request, String role) {
+        return ResponseEntity.ok(authService.register(request, "STUDENT"));
     }
     @PostMapping("/register/teacher")
-    public ResponseEntity<AuthResponse> registerTeacher(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.registerTeacher(request));
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+        return ResponseEntity.ok(authService.register(request, "TEACHER"));
     }
 }

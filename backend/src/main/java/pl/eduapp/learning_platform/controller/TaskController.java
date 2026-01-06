@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.eduapp.learning_platform.constant.TaskType;
-import pl.eduapp.learning_platform.dto.TaskRequestDTO;
-import pl.eduapp.learning_platform.dto.TaskResponseDTO;
-import pl.eduapp.learning_platform.dto.TaskShortResponse;
+import pl.eduapp.learning_platform.dto.*;
 import pl.eduapp.learning_platform.service.TaskService;
 
 import java.security.Principal;
@@ -35,6 +33,10 @@ public class TaskController {
     @GetMapping("/{id}")
     public ResponseEntity<TaskResponseDTO> getTaskById(@PathVariable Long id){
         return ResponseEntity.ok(taskService.getTaskById(id));
+    }
+    @GetMapping("/{taskId}/leaderboard")
+    public ResponseEntity<List<TaskLeaderboardDTO>> getTaskLeaderboard(@PathVariable Long taskId){
+        return ResponseEntity.ok(taskService.getTaskLeaderboard(taskId));
     }
 
 }

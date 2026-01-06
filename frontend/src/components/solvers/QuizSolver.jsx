@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../../api';
-function QuizSolver({ data, taskId }) {
+import './QuizSolver.css';
+function QuizSolver({ data, taskId, onFinish }) {
     const [userAnswers, setUserAnswers] = useState({});
     const [results, setResults] = useState(null);
     const [startTime, setStartTime] = useState(Date.now());
@@ -42,6 +43,7 @@ function QuizSolver({ data, taskId }) {
             console.log(response.data);
             alert(message);
             console.log(message);
+            if(onFinish) onFinish();
         }catch (error){
             console.error("Błąd podczas wysyłania wyniku: ", error);
             alert("Nie udało się zapisać postepów");
@@ -49,23 +51,22 @@ function QuizSolver({ data, taskId }) {
     };
     const isChecked = results !== null;
     const getOptionColor = (opt, qId) => {
-        if (!isChecked) return 'black';
+        if (!isChecked) return '#eee';
         if (opt.correctOption) return 'green';
         if (userAnswers[qId] === opt.id && !opt.correctOption) return 'red';
-        return 'black';
+        return '#eee';
     };
     useEffect(()=>{
         console.log(results);
     },[results]);
-    console.log(isChecked);
+    //console.log(isChecked);
     return (
-         <div style={{ padding: '20px' }}>
+         <div className='parentQuizSolver'>
             {data.map((q) => (
-                <div key={q.id} style={{ marginBottom: '20px', border: '1px solid #eee', padding: '15px' }}>
-                    <h4>{q.question}</h4>
-                    
+                <div key={q.id} className='questionCard'>
+                    <h4 className='h4QuizSolver'>{q.question}</h4>
                     {q.options.map((opt) => (
-                        <div key={opt.id}>
+                        <div key={opt.id} className='quizOption'>
                             <label style={{ 
                                 color: getOptionColor(opt, q.id),
                                 fontWeight: isChecked && opt.correctOption ? 'bold' : 'normal',

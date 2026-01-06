@@ -1,0 +1,102 @@
+.profileParent{
+    padding: 20px; 
+    margin: 0 auto;
+}
+.generalInfo{
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+.bio{
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+.saveBtn{
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.cancelBtn{
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+textarea{
+    width: 100%;
+    min-height: 80px; 
+    padding: 10px;
+}
+.buttonsContainer{
+    margin-top: 5px;
+    display: flex;
+    gap: 10px; 
+}
+.userStats{
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding: 20px;
+}
+.statText{
+    font-size: 24px;
+    font-weight: bold;
+    color: black;
+}
+.statBox{
+    flex: 1;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    color: black;
+}
+.achievements{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+    gap: 15px;
+    padding:20px;
+}
+h2{
+    margin:10px;
+}
+h1{
+    margin-top:50px;
+    margin-bottom: 0;
+}
+.badgeCard {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    background-color: #fff;
+    color: black;
+}
+.profileChangePassContainer{
+    margin-top:20px;
+    display: flex;
+    justify-content: center;
+    padding-left: 20px;
+}
+.profileFormChangePass{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+.profileInputChangePass{
+    width:40%;
+    font-size: 1.1em;
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+.profileFormChangePass{
+    width:100%;
+}

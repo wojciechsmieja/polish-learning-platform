@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect, useState } from 'react';
 import api from "../api"
+import './Profile.css';
 
 function Profile(){
     const [profile, setProfile] = useState(null);
@@ -8,6 +9,10 @@ function Profile(){
 
     const [isEditing, setIsEditing] = useState(false);
     const [newBio, setNewBio] = useState('');
+
+    const [isChangingPass, setIsChangingPass] = useState(false);
+    const [passData, setPassData] = useState({currentPassword: '', newPassword: '', confirmPassword: ''});
+
 
     useEffect(() => {
         fetchProfile();
@@ -36,17 +41,37 @@ function Profile(){
             alert("Błąd podczas aktualizacji profilu");
         }
     };
+    const handleChangePassword = async() => {
+        if(passData.newPassword!==passData.confirmPassword){
+            alert("Nowe hasła nie są identyczne");
+            return;
+        }
+        if(passData.newPassword.length<7){
+            alert("Nowe hasło jest zbyt krótkie");
+            return;
+        }
+        try{
+            await api.post("/api/profile/change-password", {
+                currentPassword: passData.currentPassword,
+                newPassword: passData.newPassword
+            });
+            alert("Hasło zostało zmienione");
+            setIsChangingPass(false);
+            setPassData({currentPassword: '', newPassword: '', confirmPassword: ''});
+        }catch (err){
+            alert("Błąd: "+(err.response?.data || "Nie udało się zmienić hasła"));
+        }
+    };
 
     if(loading) return <p>Ładowanie profilu...</p>
     if(!profile) return <p>Błąd ładownaia danych.</p>
-
     return(
-        <div className="profileParent" style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-            <div style={{ borderBottom: '2px solid #eee', paddingBottom: '20px', marginBottom: '20px' }}>
+        <div className="profileParent" >
+            <div className="generalInfo">
                 <h1>Profil użytkownika: {profile.username}</h1>
                 {!isEditing ? (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                        <p><em>{profile.bio || "Brak opisu profilu."}</em></p>
+                    <div className="bio">
+                        <p><em>Opis profilu: {profile.bio || "Brak opisu profilu."}</em></p>
                         <button onClick={() => setIsEditing(true)}>Zmień opis</button>
                     </div>                    
                 ):(
@@ -54,37 +79,37 @@ function Profile(){
                         <textarea 
                             value={newBio} 
                             onChange={(e) => setNewBio(e.target.value)}
-                            style={{ width: '100%', minHeight: '80px', padding: '10px' }}
                             placeholder="Napisz coś o sobie..."
                         />
-                        <div style={{ marginTop: '5px', display: 'flex', gap: '10px' }}>
-                            <button onClick={handleUpdateBio} style={saveBtnStyle}>Zapisz</button>
-                            <button onClick={() => setIsEditing(false)} style={cancelBtnStyle}>Anuluj</button>
+                        <div className="buttonsContainer">
+                            <button onClick={handleUpdateBio} className="saveBtn">Zapisz</button>
+                            <button onClick={() => setIsEditing(false)} className="cancelBtn">Anuluj</button>
                         </div>
                     </div>
                 )} 
             </div>
 
-            <div style={{ display: 'flex', gap: '20px', marginBottom: '30px' }}>
-                <div style={statBox}>
+
+            <div className="userStats">
+                <div className="statBox">
                     <h3>Poziom</h3>
-                    <p style={{ fontSize: '24px', fontWeight: 'bold', color: 'black'}}>{profile.level}</p>
+                    <p className="statText">{profile.level}</p>
                 </div>
-                <div style={statBox}>
+                <div className="statBox">
                     <h3>Punkty XP</h3>
-                    <p style={{ fontSize: '24px', fontWeight: 'bold' }}>{profile.totalPoints}</p>
+                    <p className="statText">{profile.totalPoints}</p>
                 </div>
-                <div style={statBox}>
+                <div className="statBox">
                     <h3>Gwiazdki</h3>
-                    <p style={{ fontSize: '24px', fontWeight: 'bold' }}>⭐ {profile.totalStars}</p>
+                    <p className="statText">⭐ {profile.totalStars}</p>
                 </div>
             </div>
 
             <h2>Twoje Odznaki ({profile.achievements.length})</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '15px' }}>
+            <div className="achievements">
                 {profile.achievements.length > 0 ? (
                     profile.achievements.map((ach, idx) => (
-                        <div key={idx} style={badgeCard}>
+                        <div key={idx} className="badgeCard">
                             <div style={{ fontSize: '40px' }}>🏆</div>
                             <h4 style={{ margin: '5px 0' }}>{ach.name}</h4>
                             <small>{ach.description}</small>
@@ -94,28 +119,41 @@ function Profile(){
                     <p>Nie zdobyłeś jeszcze żadnych odznak. Rozwiązuj zadania, aby je odblokować!</p>
                 )}
             </div>
+            <div className="profileChangePassContainer">
+                {!isChangingPass ? (
+                    <button onClick={() => setIsChangingPass(true)}>Zmień hasło</button>
+                ) : (
+                    <div className="profileFormChangePass">
+                        <h3>Zmiana hasła</h3>
+                        <input 
+                            type="password" 
+                            placeholder="Obecne hasło" 
+                            onChange={(e) => setPassData({...passData, currentPassword: e.target.value})}
+                            className="profileInputChangePass"
+                        />
+                        <input 
+                            type="password" 
+                            placeholder="Nowe hasło" 
+                            onChange={(e) => setPassData({...passData, newPassword: e.target.value})}
+                            className="profileInputChangePass"
+                        />
+                        <input 
+                            type="password" 
+                            placeholder="Powtórz nowe hasło" 
+                            onChange={(e) => setPassData({...passData, confirmPassword: e.target.value})}
+                            className="profileInputChangePass"
+                        />
+
+                        <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                            <button onClick={handleChangePassword} className="saveBtn">Potwierdź zmianę</button>
+                            <button onClick={() => setIsChangingPass(false)} className="cancelBtn">Anuluj</button>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 
 }
-
-const statBox = {
-    flex: 1,
-    padding: '15px',
-    backgroundColor: '#f8f9fa',
-    borderRadius: '10px',
-    textAlign: 'center',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)', color: 'black'
-};
-
-const badgeCard = {
-    padding: '10px',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    textAlign: 'center',
-    backgroundColor: '#fff', color: 'black'
-};
-const saveBtnStyle = { backgroundColor: '#28a745', color: 'white', border: 'none', padding: '5px 15px', borderRadius: '4px', cursor: 'pointer' };
-const cancelBtnStyle = { backgroundColor: '#dc3545', color: 'white', border: 'none', padding: '5px 15px', borderRadius: '4px', cursor: 'pointer' };
 
 export default Profile;

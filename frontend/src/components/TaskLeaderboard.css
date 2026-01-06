@@ -1,0 +1,43 @@
+.sidebarStyle{
+    width: 300px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 20px;
+}
+
+.entryStyle{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 6px;
+    color: black;
+}
+.firstPlaceTaskLeaderboard{
+    background-color: #ffd700;
+    color: #000;
+}
+.secondPlaceTaskLeaderboard{
+    background-color: #e0e0e0;
+    color: #000;
+}
+.thirdPlaceTaskLeaderboard{
+    background-color: #cd7f32;
+    color: #000;
+}
+.h4TaskLeaderboard{
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: #000000ff;
+}
+.sidebarStyleP{
+    font-size: 0.8em;
+    color: #666;
+}

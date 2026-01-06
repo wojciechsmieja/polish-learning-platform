@@ -1,0 +1,17 @@
+.taskGrid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 0;
+    list-style: none;
+}
+.taskCard{
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    background: #bebdbd;
+    color: black;
+}
+.publicTaskParent{
+    margin-top: 5em;
+}

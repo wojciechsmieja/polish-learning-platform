@@ -1,6 +1,8 @@
 import React from "react";
 import { useState, useEffect } from 'react';
 import api from '../../api';
+import './SentenceSolver.css';
+
 function SentenceSolver({data, taskId}){
 
     useEffect(()=>{
@@ -57,14 +59,15 @@ function SentenceSolver({data, taskId}){
     };
     const isChecked = results !== null;
     
-    console.log(isChecked);
+    //console.log(isChecked);
     return (
-       <div style={{ padding: '20px', lineHeight: '2.5' }}>
+       <div className="parentSentenceSolver">
+            <p>Uzupełnij zdania podanym słowem w odpowiedniej formie.</p>
             {data.map((item) => {
                 const parts = item.sentence.split(/_{2,}/);
                 const correct = results ? results[item.id] : null;
                 return (
-                    <div key={item.id} style={{ marginBottom: '20px', fontSize: '18px' }}>
+                    <div key={item.id} className="sentenceMapped">
                         <span>{parts[0]}</span>
                         <input
                             type="text"

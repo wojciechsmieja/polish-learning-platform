@@ -35,12 +35,21 @@ public class AuthService {
         return new AuthResponse(token);
     }
     @Transactional
-    public AuthResponse registerStudent(RegisterRequest request) {
+    public AuthResponse register(RegisterRequest request, String role) {
         if(userRepository.existsByUsername(request.getUsername())){
             throw new RuntimeException("Username is already in use");
         }
+        if(request.getPassword().length() < 7){
+            throw new RuntimeException("Password must be at least 7 characters");
+        }
         User user = new User();
-        user.setRole("STUDENT");
+        String upperRole = role.toUpperCase();
+        if("STUDENT".equals(upperRole) || "TEACHER".equals(upperRole)){
+            user.setRole(upperRole);
+        }
+        else{
+            throw new RuntimeException("Invalid role" + upperRole);
+        }
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
@@ -51,35 +60,12 @@ public class AuthService {
         UserProfile userProfile = new UserProfile();
         userProfile.setUser(savedUser);
         userProfile.setTotalStars(0L);
-        userProfile.setTotalStars(0L);
+        userProfile.setTotalPoints(0L);
         userProfile.setLevel(1);
         userProfileRepository.save(userProfile);
 
         String token = jwtService.generateToken(savedUser);
         return new AuthResponse(token);
     }
-    @Transactional
-    public AuthResponse registerTeacher(RegisterRequest request) {
-        if(userRepository.existsByUsername(request.getUsername())){
-            throw new RuntimeException("Username is already in use");
-        }
-        User user = new User();
-        user.setRole("TEACHER");
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setEmail(request.getEmail());
-        user.setCreatedAt(OffsetDateTime.now());
-        user.setUpdatedAt(OffsetDateTime.now());
-        User savedUser = userRepository.save(user);
 
-        UserProfile userProfile = new UserProfile();
-        userProfile.setUser(savedUser);
-        userProfile.setTotalStars(0L);
-        userProfile.setTotalStars(0L);
-        userProfile.setLevel(1);
-        userProfileRepository.save(userProfile);
-
-        String token = jwtService.generateToken(savedUser);
-        return new AuthResponse(token);
-    }
 }

@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../api';
+import './PublicTasksByType.css';
 
 function PublicTasksByType() {
     const { type } = useParams();
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const typeLabel = {
+        QUIZ: "QUIZY",
+        COMPLETE_SENTENCE: "UZUPEŁNIANIE ZDAŃ",
+        ANALYSIS: "ANALIZY"
+    }
     useEffect(() => {
         const fetchTasks = async () => {
             setLoading(true);
@@ -23,23 +28,16 @@ function PublicTasksByType() {
 
         fetchTasks();
     }, [type]); 
-
     if (loading) return <p>Ładowanie zadań...</p>;
-
     return (
-        <div style={{ padding: '20px' }}>
-            <h2>Zadania publiczne: {type}</h2>
+        <div className="publicTaskParent">
+            <h2>Dostępne {typeLabel[type] ?? type}</h2>
             {tasks.length === 0 ? (
                 <p>Brak dostępnych zadań tego typu.</p>
             ) : (
-                <ul style={{ listStyle: 'none', padding: 0 }}>
+                <ul className='taskGrid'>
                     {tasks.map(task => (
-                        <li key={task.id} style={{ 
-                            border: '1px solid #ddd', 
-                            marginBottom: '10px', 
-                            padding: '15px',
-                            borderRadius: '8px' 
-                        }}>
+                        <li key={task.id} className='taskCard'>
                             <h3>{task.title}</h3>
                             <p>{task.description}</p>
                             <small>Trudność: {task.difficulty}/3</small>
@@ -50,8 +48,7 @@ function PublicTasksByType() {
                                     </span>
                                 ))}
                             </div>
-                            {task.isCompleted && <span className="badge">ZALICZONE ✅</span>}
-                            <br />
+
                             <Link to={`/tasks/${task.id}`}>
                                 <button style={{ marginTop: '10px' }}>Rozwiąż</button>
                             </Link>

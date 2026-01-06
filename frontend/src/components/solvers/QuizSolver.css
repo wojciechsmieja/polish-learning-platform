@@ -1,0 +1,17 @@
+.parentQuizSolver{
+    padding: 20px;
+
+
+}
+.questionCard{
+    margin-bottom: 20px;
+    border: 1px solid #eee;
+    padding: 15px;
+    
+}
+.h4QuizSolver{
+    color:#eee;
+}
+.quizOption{
+    color:#eee;
+}

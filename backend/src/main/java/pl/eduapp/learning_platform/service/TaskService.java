@@ -2,9 +2,12 @@ package pl.eduapp.learning_platform.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.eduapp.learning_platform.constant.TaskType;
+import pl.eduapp.learning_platform.dto.TaskLeaderboardDTO;
 import pl.eduapp.learning_platform.dto.TaskRequestDTO;
 import pl.eduapp.learning_platform.dto.TaskResponseDTO;
 import pl.eduapp.learning_platform.dto.TaskShortResponse;
@@ -112,5 +115,11 @@ public class TaskService {
         Task task =  taskRepository.findById(id)
                 .orElseThrow(()-> new RuntimeException("Task not found while trying to get the task"));
         return taskMapper.toDTO(task);
+    }
+
+    public List<TaskLeaderboardDTO> getTaskLeaderboard(Long taskId){
+        return userTaskAttemptRepository.findTopSpeedTest(taskId, PageRequest.of(0, 5))
+                .stream()
+                .toList();
     }
 }
