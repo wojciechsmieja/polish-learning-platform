@@ -50,7 +50,7 @@ function PublicTasksByType() {
                             </div>
 
                             <Link to={`/tasks/${task.id}`}>
-                                <button style={{ marginTop: '10px' }}>Rozwiąż</button>
+                                <button style={{ backgroundColor: '#0084ffff', color: 'white', border: 'none', padding: '5px 15px', borderRadius: '4px', marginTop:'10px' }}>Rozwiąż</button>
                             </Link>
                         </li>
                     ))}

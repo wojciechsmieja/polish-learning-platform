@@ -102,7 +102,7 @@ function Register() {
                 <button 
                     type="submit" 
                     disabled={loading}
-                    style={{ ...btnStyle, backgroundColor: loading ? '#ccc' : '#28a745' }}
+                    style={{ ...btnStyle, backgroundColor: loading ? '#ccc' : '#0084ffff' }}
                 >
                     {loading ? "Rejestrowanie..." : "Stwórz konto"}
                 </button>

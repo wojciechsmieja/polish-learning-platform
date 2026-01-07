@@ -14,7 +14,7 @@ import pl.eduapp.learning_platform.entity.UserTaskAttempt;
 import java.util.List;
 @Repository
 public interface UserTaskAttemptRepository extends JpaRepository<UserTaskAttempt, Long> {
-    List<UserTaskAttempt> findByUser(String user);
+    List<UserTaskAttempt> findByUser(User user);
     Long countByUser(User user);
     Long countByUserAndTaskTaskType(User user, TaskType taskType);
 

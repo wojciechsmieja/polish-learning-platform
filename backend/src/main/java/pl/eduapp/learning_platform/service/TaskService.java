@@ -45,7 +45,6 @@ public class TaskService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(()-> new RuntimeException("User not found while trying to create the task"));
         task.setCreatedBy(user);
-        System.out.println("haloloooo");
         System.out.println("Analysis details count: " + (task.getAnalysisDetails() != null ? task.getAnalysisDetails().size() : 0));
         if(task.getQuizDetails() != null) {
             for(TaskQuizDetail detail : task.getQuizDetails()) {
@@ -75,8 +74,8 @@ public class TaskService {
                 .toList();
     }
 
-    public List<TaskResponseDTO> getPublicTasks(String username){
-        return taskRepository.findByPublicTaskTrue()
+    public List<TaskResponseDTO> getAllTasks(){
+        return taskRepository.findAll()
                 .stream()
                 .map(taskMapper::toDTO)
                 .toList();
@@ -122,4 +121,12 @@ public class TaskService {
                 .stream()
                 .toList();
     }
+    @Transactional
+    public void updateVisibility(Long taskId, boolean isPublic){
+        Task task = taskRepository.findById(taskId).orElseThrow(()-> new RuntimeException("Task not found while trying to get the task"));
+        task.setPublicTask(isPublic);
+        taskRepository.save(task);
+    }
+
+
 }

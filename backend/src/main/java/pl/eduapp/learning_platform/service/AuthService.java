@@ -32,7 +32,7 @@ public class AuthService {
 
         var user = userRepository.findByUsername(request.username()).orElseThrow();
         var token = jwtService.generateToken(user);
-        return new AuthResponse(token);
+        return new AuthResponse(token, user.getRole());
     }
     @Transactional
     public AuthResponse register(RegisterRequest request, String role) {
@@ -65,7 +65,7 @@ public class AuthService {
         userProfileRepository.save(userProfile);
 
         String token = jwtService.generateToken(savedUser);
-        return new AuthResponse(token);
+        return new AuthResponse(token, user.getRole());
     }
 
 }

@@ -13,6 +13,7 @@ import pl.eduapp.learning_platform.repository.UserTaskAttemptRepository;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,53 +30,72 @@ public class ProgressService {
     @Transactional
     public TaskResultResponse submitTask(TaskSubmissionDTO submission, String username){
         Task task = taskRepository.findById(submission.getTaskId()).orElseThrow();
-        User user = userRepository.findByUsername(username).orElseThrow();
+
         //current result
         double score = calculateScore(task, submission.getAnswers());
         int stars = calculateStars(score);
         int points = (int)(task.getDifficulty() *100*(score/100.0));
-        //boolean wasAlreadyCompleted = userTaskAttempRepository.existsByUserAndTaskAndCompletedTrue(user, task);
+        //send this
+        int starsToDisplay = stars;
+        int pointsToDisplay = 0;
+        boolean isLevelUp = false;
+        List<Achievement> achievements = new ArrayList<>();
+
+        //for authenticated users
         //best stars so far
-        Integer bestStarsSoFar = userTaskAttemptRepository.findMaxStarsByUserAndTask(user, task);
-        if(bestStarsSoFar == null){bestStarsSoFar = 0;}
+        if(username != null) {
+            User user = userRepository.findByUsername(username).orElseThrow();
+            Integer bestStarsSoFar = userTaskAttemptRepository.findMaxStarsByUserAndTask(user, task);
+            if (bestStarsSoFar == null) {
+                bestStarsSoFar = 0;
+            }
 
-        //best score so far
-        Double bestScoreSoFar = userTaskAttemptRepository.findMaxScoreByUserAndTask(user, task);
-        if(bestScoreSoFar == null){bestScoreSoFar = 0.0;}
-        //this stars we add to profile
-        int starsToAward = Math.max(0, stars-bestStarsSoFar);
-        //SAME WITH POINTS
-        int bestPointsSoFar = (int)(task.getDifficulty() *100*(bestScoreSoFar/100.0));
-        int pointsToAward = Math.max(0, points-bestPointsSoFar);
+            //best score so far
+            Double bestScoreSoFar = userTaskAttemptRepository.findMaxScoreByUserAndTask(user, task);
+            if (bestScoreSoFar == null) {
+                bestScoreSoFar = 0.0;
+            }
+            //this stars we add to profile
+            int starsToAdd = Math.max(0, stars - bestStarsSoFar);
+            //SAME WITH POINTS
+            int bestPointsSoFar = (int) (task.getDifficulty() * 100 * (bestScoreSoFar / 100.0));
+            int pointsToAdd = Math.max(0, points - bestPointsSoFar);
 
-        //get profile
-        UserProfile profile = userProfileRepository.findById(user.getId())
-                .orElseThrow(()->new RuntimeException("User not found"));
-        int oldLevel = profile.getLevel();
-        //save attemp
-        UserTaskAttempt attemp = new UserTaskAttempt();
-        attemp.setUser(user);
-        attemp.setTask(task);
-        attemp.setScorePercentage(score);
-        attemp.setStars(stars);
-        attemp.setPoints(pointsToAward);
-        attemp.setTimeSpent(Duration.ofSeconds(submission.getTimeSpentSeconds()));
-        attemp.setCompletedAt(OffsetDateTime.now());
-        attemp.setCompleted(score == 100.0);
-        userTaskAttempRepository.save(attemp);
+            //get profile
+            UserProfile profile = userProfileRepository.findByUser(user)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            int oldLevel = profile.getLevel();
+            //save attemp
+            UserTaskAttempt attemp = new UserTaskAttempt();
+            attemp.setUser(user);
+            attemp.setTask(task);
+            attemp.setScorePercentage(score);
+            attemp.setStars(stars);
+            attemp.setPoints(points);
+            attemp.setTimeSpent(Duration.ofSeconds(submission.getTimeSpentSeconds()));
+            attemp.setCompletedAt(OffsetDateTime.now());
+            attemp.setCompleted(score >= 100.0);
+            userTaskAttempRepository.save(attemp);
 
-        profile.setTotalStars(profile.getTotalStars() + starsToAward);
-        profile.setTotalPoints(profile.getTotalPoints() + pointsToAward);
-        int newLevel = (int)(profile.getTotalPoints()/1000 )+ 1;
-        profile.setLevel(newLevel);
-        userProfileRepository.save(profile);
+            //update statistics
+            profile.setTotalStars(profile.getTotalStars() + starsToAdd);
+            profile.setTotalPoints(profile.getTotalPoints() + pointsToAdd);
 
-        boolean isLevelUp = newLevel > oldLevel;
+            int newLevel = (int) (profile.getTotalPoints() / 1000) + 1;
+            profile.setLevel(newLevel);
+            userProfileRepository.save(profile);
 
-        List<Achievement> newBadges = achievementService.checkAndAward(user, attemp, userProfileRepository.findByUser(user).get());
+            isLevelUp = newLevel > oldLevel;
+            achievements = achievementService.checkAndAward(user, attemp, userProfileRepository.findByUser(user).get());
 
-        return new TaskResultResponse(score, starsToAward, pointsToAward, score==100.0, isLevelUp,
-                newBadges.stream().map(Achievement::getName).toList());
+            pointsToDisplay = pointsToAdd;
+            starsToDisplay = starsToAdd;
+        }else{
+            pointsToDisplay = points;
+        }
+
+        return new TaskResultResponse(score, starsToDisplay, pointsToDisplay, score==100.0, isLevelUp,
+                achievements.stream().map(Achievement::getName).toList());
     }
 
     private double calculateScore(Task task, Map<Long, String> userAnswers){

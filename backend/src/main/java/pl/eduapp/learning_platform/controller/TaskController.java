@@ -2,6 +2,7 @@ package pl.eduapp.learning_platform.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.eduapp.learning_platform.constant.TaskType;
 import pl.eduapp.learning_platform.dto.*;
@@ -16,8 +17,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskController {
     private final TaskService taskService;
-
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<TaskResponseDTO> createTask(@RequestBody TaskRequestDTO dto, Principal principal){
         return ResponseEntity.ok(taskService.createTask(dto, principal.getName()));
     }
@@ -28,7 +29,8 @@ public class TaskController {
     @GetMapping("/public/{type}")
     public ResponseEntity<List<TaskShortResponse>> getPublicSpecifiedTasks(@PathVariable TaskType type, Principal principal){
         //type = TaskType.valueOf(type.toString().toUpperCase());
-        return ResponseEntity.ok(taskService.getTasksByTypeAndPublic(type, principal.getName()));
+        String username = (principal != null) ? principal.getName() : null;
+        return ResponseEntity.ok(taskService.getTasksByTypeAndPublic(type, username));
     }
     @GetMapping("/{id}")
     public ResponseEntity<TaskResponseDTO> getTaskById(@PathVariable Long id){
@@ -37,6 +39,16 @@ public class TaskController {
     @GetMapping("/{taskId}/leaderboard")
     public ResponseEntity<List<TaskLeaderboardDTO>> getTaskLeaderboard(@PathVariable Long taskId){
         return ResponseEntity.ok(taskService.getTaskLeaderboard(taskId));
+    }
+    @PatchMapping("/{id}/visibility")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<?> changeVisibility(@PathVariable Long id, @RequestParam(name="isPublic") Boolean visibility){
+        taskService.updateVisibility(id, visibility);
+        return ResponseEntity.ok().build();
+    }
+    @GetMapping("/admin/all")
+    public ResponseEntity<List<TaskResponseDTO>> getAllTasks(){
+        return ResponseEntity.ok(taskService.getAllTasks());
     }
 
 }

@@ -11,9 +11,9 @@ function Login() {
         e.preventDefault();
         try {
             const response = await api.post('/api/auth/login', { username, password });
-            
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('username', username);
+            localStorage.setItem('role', response.data.role);
             navigate('/');
             window.location.reload(); 
         } catch (error) {
@@ -34,7 +34,7 @@ function Login() {
                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
                 <br/>
-                <button type="submit">Zaloguj</button>
+                <button type="submit" style={{ backgroundColor: '#0084ffff', color: 'white', border: 'none', padding: '5px 15px', borderRadius: '4px', marginTop:'10px' }}>Zaloguj</button>
             </form>
         </div>
     );

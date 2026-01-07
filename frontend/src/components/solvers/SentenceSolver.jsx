@@ -33,7 +33,6 @@ function SentenceSolver({data, taskId}){
         setResults(newResults);
         console.log("wyniki: ", newResults);
         console.log("odpowiedzi", userAnswers);
-
         try{
             const endTime = Date.now();
             const timeSpent = Math.floor((endTime-startTime)/1000);
@@ -45,12 +44,18 @@ function SentenceSolver({data, taskId}){
             console.log("payload", payload);
             const response = await api.post('/api/progress/submit', payload);
             const {scorePercentage, stars, pointsEarned, isLevelUp, newBadges} = response.data;
-            let message = `Zadanie zakończone! \nWynik: ${scorePercentage}% \nGwiazdki: ${stars} \nXP: +${pointsEarned}`;
-            if(isLevelUp){
-                message += "Gratulacje! Awansowałeś/aś na nowy poziom.";
-            }
-            if(newBadges && newBadges.length>0){
-                message += `\n\nZdobyte nowe odznaki:\n- ${newBadges.join('\n- ')}`;
+            let isGuest = !localStorage.getItem('token');
+            let message = '';
+            if(isGuest){
+                message = `\n\n Gdybyś był zalogowany, otrzymałbyś ${pointsEarned} XP! Zaloguj się, aby zbierać odznaki.`
+            }else{
+                message = `Zadanie zakończone! \nWynik: ${scorePercentage}% \nGwiazdki: ${stars} \nXP: +${pointsEarned}`;
+                if(isLevelUp){
+                    message += "Gratulacje! Awansowałeś/aś na nowy poziom.";
+                }
+                if(newBadges && newBadges.length>0){
+                    message += `\n\nZdobyte nowe odznaki:\n- ${newBadges.join('\n- ')}`;
+                }
             }
             alert(message);
         }catch (error){
@@ -102,12 +107,12 @@ function SentenceSolver({data, taskId}){
                 {!isChecked ? (
                     <button 
                         onClick={()=>checkAnswers()}
-                        style={{ marginTop: '20px', padding: '10px 20px', cursor: 'pointer' }}
+                        style={{ backgroundColor: '#0084ffff', color: 'white', border: 'none', padding: '5px 15px', borderRadius: '4px', marginTop:'10px' }}
                     >
                         Sprawdź
                     </button>
                 ):(
-                    <button onClick={() => { setResults(null); setUserAnswers({}); setStartTime(Date.now()); }}>
+                    <button onClick={() => { setResults(null); setUserAnswers({}); setStartTime(Date.now()); }} style={{ backgroundColor: '#0084ffff', color: 'white', border: 'none', padding: '5px 15px', borderRadius: '4px', marginTop:'10px' }}>
                         Spróbuj ponownie
                     </button>
                 )}

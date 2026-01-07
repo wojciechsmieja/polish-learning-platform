@@ -3,6 +3,7 @@ package pl.eduapp.learning_platform.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -40,15 +41,30 @@ public class SecurityConfig {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         //below we can define who has access to varius endpoints
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/register/**").permitAll()
-                        .requestMatchers("/api/tasks/public/**").permitAll()
+                        //authorization
+                        .requestMatchers("/api/auth/**", "/api/auth/register/**").permitAll()
+                        //getTasks
+                        .requestMatchers(HttpMethod.POST, "/api/tasks/create").hasAnyRole("ADMIN", "TEACHER")
                         .requestMatchers("/api/tasks/my").authenticated()
+                        .requestMatchers("/api/tasks/public/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/tasks/**").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/tasks/**").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/tasks/admin/all").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/tasks/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/tasks/{id}/leaderboard").permitAll()
+                        //progress
+                        .requestMatchers(HttpMethod.POST, "/api/progress/submit").permitAll()
                         .requestMatchers("/api/progress/**").authenticated()
+                        //profiles
+                        .requestMatchers(HttpMethod.GET,"/api/profile/user/**").permitAll()
                         .requestMatchers("/api/profile/**").authenticated()
-                        .requestMatchers("/api/tasks/**" +
-                                "").permitAll()
-
+                        //classes
+                        .requestMatchers(HttpMethod.POST, "/api/classes/create").hasRole("TEACHER")
+                        .requestMatchers(HttpMethod.GET, "/api/classes/teacher").hasRole("TEACHER")
+                        .requestMatchers(HttpMethod.GET, "/api/classes/{id}/details").hasRole("TEACHER")
+                        .requestMatchers(HttpMethod.GET, "/api/classes/student").hasRole("STUDENT")
+                        .requestMatchers(HttpMethod.POST, "/api/classes/join").hasRole("STUDENT")
+                        //rest
                     .anyRequest().authenticated()
         )
                 .authenticationProvider(authenticationProvider())

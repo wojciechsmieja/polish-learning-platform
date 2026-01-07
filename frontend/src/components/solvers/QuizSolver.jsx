@@ -33,12 +33,19 @@ function QuizSolver({ data, taskId, onFinish }) {
             };
             const response = await api.post('/api/progress/submit', payload);
             const {scorePercentage, stars, pointsEarned, isLevelUp, newBadges} = response.data;
-            let message = `Zadanie zakończone! \nWynik: ${scorePercentage}% \nGwiazdki: ${stars} \nXP: +${pointsEarned}`;
-            if(isLevelUp){
-                message += "Gratulacje! Awansowałeś/aś na nowy poziom.";
-            }
-            if(newBadges && newBadges.length>0){
-                message += `\n\nZdobyte nowe odznaki:\n- ${newBadges.join('\n- ')}`;
+            let isGuest = !localStorage.getItem('token');
+            let message = '';
+
+            if(isGuest){
+                message = `\n\n Gdybyś był zalogowany, otrzymałbyś ${pointsEarned} XP! Zaloguj się, aby zbierać odznaki.`
+            }else{
+                message = `Zadanie zakończone! \nWynik: ${scorePercentage}% \nGwiazdki: ${stars} \nXP: +${pointsEarned}`;
+                if(isLevelUp){
+                    message += "Gratulacje! Awansowałeś/aś na nowy poziom.";
+                }
+                if(newBadges && newBadges.length>0){
+                    message += `\n\nZdobyte nowe odznaki:\n- ${newBadges.join('\n- ')}`;
+                }
             }
             console.log(response.data);
             alert(message);
@@ -89,9 +96,9 @@ function QuizSolver({ data, taskId, onFinish }) {
 
             <div style={{ marginTop: '20px' }}>
                 {!isChecked ? (
-                    <button onClick={checkQuiz}>Sprawdź odpowiedzi</button>
+                    <button onClick={checkQuiz} style={{ backgroundColor: '#0084ffff', color: 'white', border: 'none', padding: '5px 15px', borderRadius: '4px', marginTop:'10px' }}>Sprawdź odpowiedzi</button>
                 ) : (
-                    <button onClick={() => { setResults(null); setUserAnswers({}); setStartTime(Date.now()); }}>
+                    <button onClick={() => { setResults(null); setUserAnswers({}); setStartTime(Date.now()); }} style={{ backgroundColor: '#0084ffff', color: 'white', border: 'none', padding: '5px 15px', borderRadius: '4px', marginTop:'10px' }}>
                         Spróbuj ponownie
                     </button>
                 )}

@@ -8,6 +8,11 @@ import Profile from './pages/Profile';
 import Register from './pages/Register';
 import Leaderboard from './pages/Leaderboard';
 import PublicProfile from './components/PublicProfile';
+import CreateTask from './components/CreateTask';
+import AdminTaskManage from './pages/AdminTaskManage';
+import TeacherClasses from './components/TeacherClasses';
+import StudentClasses from './components/StudentClasses';
+import ClassDetails from './components/ClassDetails';
 function App() {
     return (
         <Router>
@@ -21,6 +26,11 @@ function App() {
                 <Route path="/profile" element={<Profile/>}/>
                 <Route path="/leaderboard" element={<Leaderboard/>}/>
                 <Route path="/profile/:username" element={<PublicProfile/>}/>
+                <Route path="/admin/create-task" element={<CreateTask/>}/>
+                <Route path="/admin/manage/tasks" element={<AdminTaskManage/>}/>
+                <Route path="/teacher/classes" element={<TeacherClasses/>}/>
+                <Route path="/student/classes" element={<StudentClasses/>}/>
+                <Route path="/teacher/classes/:id/details" element={<ClassDetails/>}/>
             </Routes>
         </Router>
     );

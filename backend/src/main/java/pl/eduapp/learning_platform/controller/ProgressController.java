@@ -18,7 +18,8 @@ public class ProgressController {
 
     @PostMapping("/submit")
     public ResponseEntity<TaskResultResponse> submit(@RequestBody TaskSubmissionDTO dto, Principal principal){
-        return ResponseEntity.ok(progressService.submitTask(dto, principal.getName()));
+        String username = (principal != null) ? principal.getName() : null;
+        return ResponseEntity.ok(progressService.submitTask(dto, username));
     }
 
 }
