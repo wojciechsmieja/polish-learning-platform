@@ -7,10 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
-import pl.eduapp.learning_platform.dto.AchievementDTO;
-import pl.eduapp.learning_platform.dto.ChangePasswordRequest;
-import pl.eduapp.learning_platform.dto.LeaderboardEntryDTO;
-import pl.eduapp.learning_platform.dto.ProfileResponseDTO;
+import pl.eduapp.learning_platform.dto.*;
 import pl.eduapp.learning_platform.entity.User;
 import pl.eduapp.learning_platform.entity.UserProfile;
 import pl.eduapp.learning_platform.repository.AchievementRepository;
@@ -60,18 +57,31 @@ public class ProfileService {
         return userProfileRepository.save(profile);
     }
 
-    public List<LeaderboardEntryDTO> getGlobalLeaderboard(){
-        Pageable topTen = PageRequest.of(0, 10);
-        return userProfileRepository.findTopStudents(topTen)
+    public LeaderboardResponse getGlobalLeaderboard(String username){
+        Pageable topTenPage = PageRequest.of(0, 10);
+        List<LeaderboardEntryDTO> topTen = userProfileRepository.findTopStudents(topTenPage)
                 .stream()
-                .map(p -> new LeaderboardEntryDTO(
+                .map(p->new LeaderboardEntryDTO(
                         p.getUser().getUsername(),
                         p.getLevel(),
                         p.getTotalPoints(),
                         p.getTotalStars(),
                         p.getAvatarUrl()
-                ))
-                .toList();
+                )).toList();
+        LeaderboardEntryDTO currentUserEntry = null;
+        Long rank = null;
+
+        if(username != null){
+            User user = userRepository.findByUsername(username).orElseThrow(()-> new RuntimeException("User not found"));
+            UserProfile profile = userProfileRepository.findByUser(user).orElseThrow(()-> new RuntimeException("UserProfile not found"));
+            if(profile != null){
+                rank = userProfileRepository.calculateRank(profile.getTotalPoints());
+                currentUserEntry = new LeaderboardEntryDTO(
+                        username, profile.getLevel(), profile.getTotalPoints(), profile.getTotalStars(), profile.getAvatarUrl()
+                );
+            }
+        }
+        return new LeaderboardResponse(topTen, currentUserEntry, rank);
     }
     public void changePassword(String username, ChangePasswordRequest request){
         User user = userRepository.findByUsername(username).orElseThrow(()-> new RuntimeException("User not found"));

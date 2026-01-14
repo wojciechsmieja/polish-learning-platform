@@ -27,12 +27,9 @@ public class AchievementService {
     public List<Achievement> checkAndAward(User user, UserTaskAttempt lastAttempt, UserProfile profile) {
         List<Long> ownedIds = userAchievementRepository.findAllByUser(user)
                 .stream().map(ua -> ua.getAchievement().getId()).toList();
-
         List<Achievement> unearned = achievementRepository.findAll().stream()
                 .filter(a -> !ownedIds.contains(a.getId())).toList();
-
         List<Achievement> newlyEarned = new ArrayList<>();
-
         for(Achievement a : unearned) {
             if(isCriteriaMet(user, a, lastAttempt, profile)){
                 UserAchievement ua = new UserAchievement();

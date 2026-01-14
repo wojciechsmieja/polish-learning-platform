@@ -30,10 +30,13 @@ function PublicProfile(){
     return(
         <div className="profileParent" >
             <div className="generalInfo">
-                <h1>Profil użytkownika: {profile.username}</h1>
-                <div className="bio">
-                    <p><em>Opis profilu: {profile.bio || "Brak opisu profilu."}</em></p>
-                </div>                    
+                <h1>Profil: {profile.username}</h1>
+                {profile.bio &&(
+                    <div className="bio">
+                        <p><em>Opis profilu: {profile.bio || "Brak opisu profilu."}</em></p>
+                    </div> 
+                )}
+                   
             </div>
             <div className="userStats">
                 <div className="statBox">

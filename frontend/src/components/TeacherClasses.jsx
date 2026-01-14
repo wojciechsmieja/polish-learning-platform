@@ -35,11 +35,29 @@ function TeacherClasses() {
         }
     };
 
+
+    const handleDeleteClass = async (e, classId) => {
+        e.stopPropagation(); 
+
+        if (window.confirm("Czy na pewno chcesz usunąć tę klasę? Uczniowie stracą do niej dostęp.")) {
+            try {
+                await api.patch(`/api/classes/deactivate/${classId}`);
+                
+                // Usuwamy klasę z lokalnego stanu (UI)
+                setClasses(classes.filter(c => c.id !== classId));
+                
+                alert("Klasa została usunięta.");
+            } catch (err) {
+                console.error("Błąd usuwania:", err);
+                alert("Błąd podczas usuwania klasy.");
+            }
+        }
+    };
+
     return (
         <div style={{ padding: '20px' }}>
             <h2>Panel Nauczyciela: Twoje Klasy</h2>
             
-            {/* Formularz tworzenia */}
             <form onSubmit={handleCreate} style={formStyle}>
                 <input 
                     placeholder="Nazwa klasy (np. 3A Angielski)" 
@@ -60,8 +78,18 @@ function TeacherClasses() {
             {loading ? <p>Ładowanie klas...</p> : (
                 <div style={listStyle}>
                     {classes.map(c => (
-                        <div key={c.id} style={cardStyle} onClick={()=>navigate(`/teacher/classes/${c.id}/details`)}>
-                            <h3>{c.name}</h3>
+                        <div key={c.id} style={cardStyle} onClick={() => navigate(`/teacher/classes/${c.id}/details`)}>
+                            {/* Nagłówek z przyciskiem usuwania */}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                <h3>{c.name}</h3>
+                                <button 
+                                    onClick={(e) => handleDeleteClass(e, c.id)}
+                                    style={deleteBtnStyle}
+                                >
+                                    Usuń
+                                </button>
+                            </div>
+                            
                             <p>{c.description}</p>
                             <div style={codeBox}>
                                 <strong>KOD DOŁĄCZENIA:</strong> 
@@ -76,11 +104,22 @@ function TeacherClasses() {
     );
 }
 
-// Proste style
+// Styl dla przycisku usuwania
+const deleteBtnStyle = {
+    backgroundColor: '#ff4d4f',
+    color: 'white',
+    border: 'none',
+    padding: '4px 8px',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '12px'
+};
+
+// Reszta Twoich styli bez zmian
 const formStyle = { display: 'flex', gap: '10px', marginBottom: '30px' };
 const listStyle = { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '20px', color:'#000000ff' };
-const cardStyle = { padding: '15px', border: '1px solid #ddd', borderRadius: '8px', backgroundColor: '#a3a3a3ff',color:'#000' };
-const codeBox = { margin: '10px 0', padding: '10px', backgroundColor: 'rgba(209, 209, 209, 1)', borderRadius: '5px', textAlign: 'center',color:'#000' };
+const cardStyle = { padding: '15px', border: '1px solid #ddd', borderRadius: '8px', backgroundColor: '#a3a3a3ff', color:'#000', cursor: 'pointer' };
+const codeBox = { margin: '10px 0', padding: '10px', backgroundColor: 'rgba(209, 209, 209, 1)', borderRadius: '5px', textAlign: 'center', color:'#000' };
 const codeText = { display: 'block', fontSize: '20px', letterSpacing: '2px', color: '#005' };
 
 export default TeacherClasses;

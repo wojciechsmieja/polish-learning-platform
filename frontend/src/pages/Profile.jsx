@@ -6,14 +6,12 @@ import './Profile.css';
 function Profile(){
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
-
+    const [error, setError] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const [newBio, setNewBio] = useState('');
 
     const [isChangingPass, setIsChangingPass] = useState(false);
     const [passData, setPassData] = useState({currentPassword: '', newPassword: '', confirmPassword: ''});
-
-
     useEffect(() => {
         fetchProfile();
     },[]);
@@ -41,15 +39,18 @@ function Profile(){
             alert("Błąd podczas aktualizacji profilu");
         }
     };
-    const handleChangePassword = async() => {
+    const handleChangePassword = async(e) => {
+        e.preventDefault();
+        setError('');
         if(passData.newPassword!==passData.confirmPassword){
-            alert("Nowe hasła nie są identyczne");
+            setError("Nowe hasła nie są identyczne");
             return;
         }
         if(passData.newPassword.length<7){
-            alert("Nowe hasło jest zbyt krótkie");
+            setError("Twoje hasło jest za krótkie! Musi mieć przynajmniej 7 znaków.");
             return;
         }
+        
         try{
             await api.post("/api/profile/change-password", {
                 currentPassword: passData.currentPassword,
@@ -59,7 +60,7 @@ function Profile(){
             setIsChangingPass(false);
             setPassData({currentPassword: '', newPassword: '', confirmPassword: ''});
         }catch (err){
-            alert("Błąd: "+(err.response?.data || "Nie udało się zmienić hasła"));
+            setError("Błąd: "+(err.response?.data || "Nie udało się zmienić hasła"));
         }
     };
 
@@ -71,8 +72,12 @@ function Profile(){
                 <h1>Profil użytkownika: {profile.username}</h1>
                 {!isEditing ? (
                     <div className="bio">
-                        <p><em>Opis profilu: {profile.bio || "Brak opisu profilu."}</em></p>
-                        <button onClick={() => setIsEditing(true)}>Zmień opis</button>
+                        {profile.bio && (
+                            <p><em>Opis profilu: {profile.bio || "Brak opisu profilu."}</em></p>
+                        )}
+                        {!profile.bio && (<p><em>Jeszcze nie ustawiłeś opisu swojego profilu. Zmień to i napisz coś o sobie.</em></p>
+                        )}
+                        <button onClick={() => setIsEditing(true)} className="changePassBtn">Zmień opis</button>
                     </div>                    
                 ):(
                     <div style={{ marginTop: '10px' }}>
@@ -116,15 +121,24 @@ function Profile(){
                         </div>
                     ))
                 ) : (
+                    <>
+                    <p></p>
                     <p>Nie zdobyłeś jeszcze żadnych odznak. Rozwiązuj zadania, aby je odblokować!</p>
+                    <p></p>
+                    </>
                 )}
             </div>
             <div className="profileChangePassContainer">
                 {!isChangingPass ? (
-                    <button onClick={() => setIsChangingPass(true)}>Zmień hasło</button>
+                    <>
+                        <p>Tutaj możesz zmienić swoje hasło</p>
+                        <button onClick={() => {setIsChangingPass(true); setError('')}} className="changePassBtn">Zmień hasło</button>
+                    </>
                 ) : (
+                    
                     <div className="profileFormChangePass">
-                        <h3>Zmiana hasła</h3>
+                        {error &&  <div key={error} className="error-bubble">{error}</div>}
+                        <h2>Zmiana hasła</h2>
                         <input 
                             type="password" 
                             placeholder="Obecne hasło" 
@@ -144,9 +158,9 @@ function Profile(){
                             className="profileInputChangePass"
                         />
 
-                        <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                            <button onClick={handleChangePassword} className="saveBtn">Potwierdź zmianę</button>
-                            <button onClick={() => setIsChangingPass(false)} className="cancelBtn">Anuluj</button>
+                        <div className="buttonsContainer">
+                            <button onClick={(e)=>handleChangePassword(e)} className="saveBtn">Potwierdź zmianę</button>
+                            <button onClick={() => {setIsChangingPass(false);setError('')}} className="cancelBtn">Anuluj</button>
                         </div>
                     </div>
                 )}

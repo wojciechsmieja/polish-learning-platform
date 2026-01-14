@@ -14,6 +14,7 @@ public class TaskShortResponse {
     private Integer difficulty;
     private Boolean publicTask;
     private Long createdById;
+    private String subject;
     private String createdByUsername;
     private String syntaxType;
     private Integer userStars;

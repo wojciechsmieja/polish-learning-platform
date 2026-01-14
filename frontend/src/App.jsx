@@ -13,6 +13,7 @@ import AdminTaskManage from './pages/AdminTaskManage';
 import TeacherClasses from './components/TeacherClasses';
 import StudentClasses from './components/StudentClasses';
 import ClassDetails from './components/ClassDetails';
+import AdminModeration from './pages/AdminModeration';
 function App() {
     return (
         <Router>
@@ -31,6 +32,7 @@ function App() {
                 <Route path="/teacher/classes" element={<TeacherClasses/>}/>
                 <Route path="/student/classes" element={<StudentClasses/>}/>
                 <Route path="/teacher/classes/:id/details" element={<ClassDetails/>}/>
+                <Route path="/admin/moderate/tasks/pending" element={<AdminModeration/>}/>
             </Routes>
         </Router>
     );

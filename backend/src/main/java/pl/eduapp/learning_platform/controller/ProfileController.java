@@ -3,10 +3,7 @@ package pl.eduapp.learning_platform.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.eduapp.learning_platform.dto.ChangePasswordRequest;
-import pl.eduapp.learning_platform.dto.LeaderboardEntryDTO;
-import pl.eduapp.learning_platform.dto.ProfileResponseDTO;
-import pl.eduapp.learning_platform.dto.UpdateBioRequest;
+import pl.eduapp.learning_platform.dto.*;
 import pl.eduapp.learning_platform.entity.UserProfile;
 import pl.eduapp.learning_platform.service.ProfileService;
 
@@ -36,8 +33,8 @@ public class ProfileController {
         return ResponseEntity.ok(profile.getBio());
     }
     @GetMapping("/leaderboard")
-    public ResponseEntity<List<LeaderboardEntryDTO>> getLeaderboard(){
-        return ResponseEntity.ok(profileService.getGlobalLeaderboard());
+    public ResponseEntity<LeaderboardResponse> getLeaderboard(Principal principal){
+        return ResponseEntity.ok(profileService.getGlobalLeaderboard(principal.getName()));
     }
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request, Principal principal){

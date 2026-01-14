@@ -1,19 +1,85 @@
-.parent{
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
+.parent {
     padding: 20px;
-    max-width: 600px; 
-    margin: 0 auto 
-}
-th{
-    padding: 10px;
-}
-td{
-    padding:10px;
+    max-width: 700px; 
+    margin: 80px auto 20px auto; 
+    font-family: 'Nunito', sans-serif;
     text-align: center;
-    border-bottom: 1px solid #fff;
 }
-.podium{
-    background-color: #724715;
+
+.parent h2 {
+    font-size: 2.5rem;
+    color: #ff6b6b; 
+    font-weight: 900;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.05);
 }
-h2{
-    font-size: 3em;
+
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: separate; 
+    border-spacing: 0 10px; 
+}
+
+.leaderboard-table th {
+    color: #4b7bec;
+    font-weight: 900;
+    padding: 10px;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.leaderboard-table tr td {
+    background-color: white;
+    padding: 15px;
+    border: none;
+    font-size: 1.1rem;
+    color: #4b6584;
+}
+
+
+.leaderboard-table tr td:first-child {
+    border-radius: 20px 0 0 20px;
+    font-weight: 900;
+}
+
+.leaderboard-table tr td:last-child {
+    border-radius: 0 20px 20px 0;
+    font-weight: 700;
+}
+
+
+.leaderboard-table a {
+    text-decoration: none;
+    color: #4b7bec;
+    font-weight: 700;
+}
+
+.leaderboard-table a:hover {
+    color: #ff6b6b;
+}
+
+
+.podium-1 td { background-color: #fff9db !important; border: 2px solid #ffde59; } 
+.podium-2 td { background-color: #f1f2f6 !important; border: 2px solid #d1d8e0; } 
+.podium-3 td { background-color: #fff0e6 !important; border: 2px solid #fab1a0; } 
+
+
+.is-me td {
+    background-color: #d5eeff !important;
+    border-top: 3px solid #4b7bec;
+    border-bottom: 3px solid #4b7bec;
+}
+
+.is-me td:first-child { border-left: 3px solid #4b7bec; }
+.is-me td:last-child { border-right: 3px solid #4b7bec; }
+
+
+.dots-row td {
+    background: transparent !important;
+    font-size: 2rem;
+    color: #d1d8e0;
+    padding: 0;
 }

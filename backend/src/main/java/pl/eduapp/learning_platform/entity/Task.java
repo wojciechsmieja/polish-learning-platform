@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.eduapp.learning_platform.constant.TaskStatus;
+import pl.eduapp.learning_platform.constant.TaskSubject;
 import pl.eduapp.learning_platform.constant.TaskType;
 
 import java.util.ArrayList;
@@ -46,4 +48,14 @@ public class Task {
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TaskAnalysisDetail> analysisDetails = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private TaskStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "subject", nullable = false)
+    private TaskSubject subject;
+
+
 }

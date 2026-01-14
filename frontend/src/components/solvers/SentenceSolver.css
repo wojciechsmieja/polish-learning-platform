@@ -1,13 +1,164 @@
-.parentSentenceSolver{
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
+.parentSentenceSolver {
+    max-width: 750px;
+    margin: 40px auto;
     padding: 20px;
-    line-height: 2.5;
-}
-.parentSentenceSolver p{
-    font-weight: 800;
-    font-size: 1.3em;
+    font-family: 'Nunito', sans-serif;
+    text-align: center;
 }
 
-.sentenceMapped{
-    margin-bottom: 20px;
-    font-size: 18px; 
+.solver-progress {
+    background-color: #fff;
+    display: inline-block;
+    padding: 8px 25px;
+    border-radius: 50px;
+    font-weight: 900;
+    color: #4b7bec;
+    border: 3px solid #e0f7fa;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 0 #e0f7fa;
+}
+
+.solver-progress span { color: #ff6b6b; }
+
+.sentence-card {
+    background: white;
+    border-radius: 35px;
+    padding: 40px;
+    box-shadow: 0 10px 0 rgba(0,0,0,0.05);
+    border: 4px solid #f1f2f6;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.sentence-content {
+    font-size: 1.5rem;
+    line-height: 2.5;
+    color: #2f3542;
+    font-weight: 700;
+}
+
+.text-part {
+    vertical-align: middle;
+}
+
+.input-wrapper {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: middle;
+    margin: 0 10px;
+}
+
+.sentence-input {
+    width: 160px;
+    height: 45px;
+    border: none;
+    border-bottom: 4px solid #d1d8e0;
+    background-color: #f8f9fa;
+    text-align: center;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #4b7bec;
+    outline: none;
+    transition: all 0.3s ease;
+    border-radius: 10px 10px 0 0;
+}
+
+.sentence-input:focus {
+    background-color: #e0f7fa;
+    border-color: #4b7bec;
+}
+
+.grammar-hint {
+    font-size: 0.85rem;
+    color: #a2d2ff;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-top: 5px;
+}
+
+/* Kolory po sprawdzeniu */
+.input-correct {
+    background-color: #e3fcef !important;
+    border-color: #20bf6b !important;
+    color: #20bf6b !important;
+}
+
+.input-wrong {
+    background-color: #ffeef0 !important;
+    border-color: #ff7675 !important;
+    color: #ff7675 !important;
+}
+
+/* Chmurka z wyjaśnieniem */
+.explanation-bubble-help {
+    margin-top: 25px;
+    background-color: #fff9db;
+    border: 2px solid #ffde59;
+    padding: 15px 20px;
+    border-radius: 20px;
+    color: #856404;
+    font-size: 1rem;
+    font-weight: 700;
+    animation: fadeIn 0.4s ease;
+}
+
+.bulb { font-size: 1.4rem; margin-right: 10px; }
+
+/* Przyciski */
+.solver-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.checkBtn, .nextBtn {
+    min-width: 250px;
+    padding: 18px;
+    border-radius: 50px;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    color: white;
+}
+
+.checkBtn { background-color: #4b7bec; box-shadow: 0 6px 0 #3858a3; }
+.nextBtn { background-color: #20bf6b; box-shadow: 0 6px 0 #138d4e; }
+
+.checkBtn:active, .nextBtn:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+}
+
+.pulse {
+    animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ekran końcowy */
+.finish-card {
+    background: white;
+    padding: 50px;
+    border-radius: 40px;
+    border: 6px solid #ffde59;
+    text-align: center;
+    max-width: 500px;
+    margin: 100px auto;
 }

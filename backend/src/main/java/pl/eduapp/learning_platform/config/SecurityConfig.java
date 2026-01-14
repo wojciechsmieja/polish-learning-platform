@@ -50,6 +50,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/api/tasks/**").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/tasks/**").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/tasks/admin/all").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/tasks/{id}/status").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/tasks/pending").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/tasks/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/tasks/{id}/leaderboard").permitAll()
                         //progress
@@ -64,6 +66,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/classes/{id}/details").hasRole("TEACHER")
                         .requestMatchers(HttpMethod.GET, "/api/classes/student").hasRole("STUDENT")
                         .requestMatchers(HttpMethod.POST, "/api/classes/join").hasRole("STUDENT")
+                        .requestMatchers(HttpMethod.PATCH, "/api/classes/deactivate/{id}").hasRole("TEACHER")
                         //rest
                     .anyRequest().authenticated()
         )
@@ -93,16 +96,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Pozwalamy na Twoją aplikację React
         configuration.setAllowedOrigins(List.of("http://localhost:5173"));
 
-        // Pozwalamy na wszystkie metody HTTP (GET, POST, PUT, DELETE, OPTIONS)
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 
-        // Pozwalamy na wszystkie nagłówki (w tym Authorization dla tokena JWT)
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
 
-        // Pozwalamy na przesyłanie ciasteczek/autoryzacji
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

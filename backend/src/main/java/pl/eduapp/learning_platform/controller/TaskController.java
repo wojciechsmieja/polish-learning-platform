@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import pl.eduapp.learning_platform.constant.TaskStatus;
 import pl.eduapp.learning_platform.constant.TaskType;
 import pl.eduapp.learning_platform.dto.*;
 import pl.eduapp.learning_platform.service.TaskService;
@@ -49,6 +50,17 @@ public class TaskController {
     @GetMapping("/admin/all")
     public ResponseEntity<List<TaskResponseDTO>> getAllTasks(){
         return ResponseEntity.ok(taskService.getAllTasks());
+    }
+    @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> moderateTask(@PathVariable Long id, @RequestParam TaskStatus status){
+        taskService.updateTaskStatus(id, status);
+        return ResponseEntity.ok().build();
+    }
+    @GetMapping("/pending")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<TaskModerationResponse>> getPendingTasks(){
+        return ResponseEntity.ok(taskService.getPendingTasks());
     }
 
 }

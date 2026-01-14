@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import api from '../api';
 import { useNavigate } from 'react-router-dom';
-
+import "./Register.css";
 function Register() {
     const [formData, setFormData] = useState({
         username: '',
@@ -10,9 +10,11 @@ function Register() {
         role: 'student'
     });
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleChange = (e) => {
+        setError('');
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
@@ -21,97 +23,113 @@ function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+        console.log("Próba wysłania formularza dla:", formData.username);
+        if (formData.password.length < 7) {
+            setError("Twoje hasło jest za krótkie! Musi mieć przynajmniej 7 znaków.");
+            return; 
+        }
+        if (formData.username.trim().length < 6) {
+            console.log(formData.username);
+        setError("Twoja nazwa jest za krótka! Napisz przynajmniej 6 znaków");
+        return;
+        }
         setLoading(true);
-
         try {
-
             const endpoint = `/api/auth/register/${formData.role}`;
-            
             const payload = {
                 username: formData.username,
                 email: formData.email,
                 password: formData.password
             };
-
             const response = await api.post(endpoint, payload);
             localStorage.setItem('token', response.data.token);
-            localStorage.setItem('username', username);
-            alert("Konto zostało utworzone pomyślnie!");
+            localStorage.setItem('username', response.data.username);
+            localStorage.setItem('role', response.data.role);
             navigate('/');
+            window.location.reload();
         } catch (error) {
             console.error("Błąd rejestracji:", error);
-            alert("Błąd rejestracji: " + (error.response?.data || "Serwer nie odpowiada"));
+            const serverMessage = error.response?.data;
+            setError(typeof serverMessage === 'string' ? serverMessage : "Serwer nie odpowiada. Spróbuj później!");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
-            <h2>Zarejestruj się</h2>
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                <div>
-                    <label>Nazwa użytkownika:</label><br/>
-                    <input 
-                        type="text" 
-                        name="username" 
-                        required 
-                        value={formData.username} 
-                        onChange={handleChange} 
-                        style={inputStyle}
-                    />
-                </div>
+        <div className="login-wrapper">
+            <div className="login-card">
+                <h2>Zarejestruj się</h2>
+                
+                {error &&  <div key={error} className="error-bubble">{error}</div>}
 
-                <div>
-                    <label>Email:</label><br/>
-                    <input 
-                        type="email" 
-                        name="email" 
-                        required 
-                        value={formData.email} 
-                        onChange={handleChange} 
-                        style={inputStyle}
-                    />
-                </div>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>Nazwa użytkownika:</label>
+                        <input 
+                            className="login-input"
+                            type="text" 
+                            name="username" 
+                            placeholder="Wpisz swoje imię..."
+                            required 
+                            value={formData.username} 
+                            onChange={handleChange} 
+                        />
+                    </div>
 
-                <div>
-                    <label>Hasło:</label><br/>
-                    <input 
-                        type="password" 
-                        name="password" 
-                        required 
-                        value={formData.password} 
-                        onChange={handleChange} 
-                        style={inputStyle}
-                    />
-                </div>
+                    <div className="form-group">
+                        <label>Email:</label>
+                        <input 
+                            className="login-input"
+                            type="email" 
+                            name="email" 
+                            placeholder="Twój email..."
+                            required 
+                            value={formData.email} 
+                            onChange={handleChange} 
+                        />
+                    </div>
 
-                <div>
-                    <label>Kim jesteś?</label><br/>
-                    <select 
-                        name="role" 
-                        value={formData.role} 
-                        onChange={handleChange} 
-                        style={inputStyle}
+                    <div className="form-group">
+                        <label>Hasło:</label>
+                        <input 
+                            className="login-input"
+                            type="password" 
+                            name="password" 
+                            placeholder="Twoje tajne hasło..."
+                            required 
+                            value={formData.password} 
+                            onChange={handleChange} 
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Kim jesteś?</label>
+                        <select 
+                            className="login-input" 
+                            name="role" 
+                            value={formData.role} 
+                            onChange={handleChange}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            <option value="student">Uczeń / Student</option>
+                            <option value="teacher">Nauczyciel</option>
+                        </select>
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        className="login-button"
+                        disabled={loading}
+                        style={loading ? { backgroundColor: '#ccc', boxShadow: 'none' } : {}}
                     >
-                        <option value="student">Uczeń / Student</option>
-                        <option value="teacher">Nauczyciel</option>
-                    </select>
-                </div>
-
-                <button 
-                    type="submit" 
-                    disabled={loading}
-                    style={{ ...btnStyle, backgroundColor: loading ? '#ccc' : '#0084ffff' }}
-                >
-                    {loading ? "Rejestrowanie..." : "Stwórz konto"}
-                </button>
-            </form>
+                        {loading ? "CZEKAJ..." : "STWÓRZ KONTO!"}
+                    </button>
+                </form>
+            </div>
         </div>
     );
 }
-
-const inputStyle = { width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' };
-const btnStyle = { padding: '10px', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '16px' };
 
 export default Register;

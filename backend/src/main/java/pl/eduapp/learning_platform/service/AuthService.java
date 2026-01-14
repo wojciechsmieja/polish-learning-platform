@@ -1,11 +1,14 @@
 package pl.eduapp.learning_platform.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import pl.eduapp.learning_platform.dto.AuthRequest;
 import pl.eduapp.learning_platform.dto.AuthResponse;
 import pl.eduapp.learning_platform.dto.RegisterRequest;
@@ -26,14 +29,21 @@ public class AuthService {
     private final JwtService jwtService;
 
     public AuthResponse login(AuthRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.username(), request.password())
-        );
+        try{
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.username(), request.password())
 
-        var user = userRepository.findByUsername(request.username()).orElseThrow();
-        var token = jwtService.generateToken(user);
-        return new AuthResponse(token, user.getRole());
+            );
+            var user = userRepository.findByUsername(request.username()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Użytkownik nie istnieje"));
+            var token = jwtService.generateToken(user);
+            return new AuthResponse(token, user.getRole(), user.getUsername());
+        }catch (BadCredentialsException e){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Niepoprawny login lub hasło");
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Błąd serwera...");
+        }
     }
+
     @Transactional
     public AuthResponse register(RegisterRequest request, String role) {
         if(userRepository.existsByUsername(request.getUsername())){
@@ -65,7 +75,7 @@ public class AuthService {
         userProfileRepository.save(userProfile);
 
         String token = jwtService.generateToken(savedUser);
-        return new AuthResponse(token, user.getRole());
+        return new AuthResponse(token, user.getRole(), user.getUsername());
     }
 
 }

@@ -1,123 +1,149 @@
-import React from "react";
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import api from '../../api';
 import './SentenceSolver.css';
 
-function SentenceSolver({data, taskId}){
-
-    useEffect(()=>{
-        console.log("Dane: ", data);
-    },[data]);
-    console.log(data);
+function SentenceSolver({ data, taskId, onFinish }) {
+    // --- STANY ---
+    const [currentIndex, setCurrentIndex] = useState(0); 
     const [userAnswers, setUserAnswers] = useState({});
-    const [results, setResults] = useState(null);
-    const [startTime, setStartTime] = useState(Date.now());  
+    const [results, setResults] = useState({}); 
+    const [isCurrentAnswerChecked, setIsCurrentAnswerChecked] = useState(false);
+    const [startTime, setStartTime] = useState(Date.now());
+    const [isFinished, setIsFinished] = useState(false);
+    const [backendResult, setBackendResult] = useState('');
+
+    const currentItem = data[currentIndex];
+
     const handleInputChange = (id, value) => {
-        setUserAnswers(prev =>({
+        if (isCurrentAnswerChecked) return; 
+        setUserAnswers(prev => ({
             ...prev,
             [id]: value
         }));
     };
 
-    const checkAnswers = async() => {
-        const newResults = {};
-        data.forEach((item) => {
-            const userAns = (userAnswers[item.id] || "").trim().toLowerCase();
-            const correctAns = item.coveredWords.trim().toLowerCase();
-            if(userAns===correctAns){
-                newResults[item.id] = true;
-            }else{
-                newResults[item.id] = false;
-            }
-        });
-        setResults(newResults);
-        console.log("wyniki: ", newResults);
-        console.log("odpowiedzi", userAnswers);
-        try{
+    const handleCheckCurrent = () => {
+        const userAns = (userAnswers[currentItem.id] || "").trim().toLowerCase();
+        const correctAns = currentItem.coveredWords.trim().toLowerCase();
+        const isCorrect = userAns === correctAns;
+
+        setResults(prev => ({ ...prev, [currentItem.id]: isCorrect }));
+        setIsCurrentAnswerChecked(true);
+    };
+
+    const handleNextOrSubmit = () => {
+        if (currentIndex < data.length - 1) {
+            setCurrentIndex(prev => prev + 1);
+            setIsCurrentAnswerChecked(false);
+        } else {
+            submitFinalResults();
+        }
+    };
+
+    const submitFinalResults = async () => {
+        setBackendResult('');
+        try {
             const endTime = Date.now();
-            const timeSpent = Math.floor((endTime-startTime)/1000);
+            const timeSpent = Math.floor((endTime - startTime) / 1000);
+            
             const payload = {
                 taskId: taskId,
                 answers: userAnswers,
-                timeSpentSeconds:timeSpent
+                timeSpentSeconds: timeSpent
             };
-            console.log("payload", payload);
+
             const response = await api.post('/api/progress/submit', payload);
-            const {scorePercentage, stars, pointsEarned, isLevelUp, newBadges} = response.data;
+            const { scorePercentage, stars, pointsEarned, isLevelUp, newBadges } = response.data;
+            
             let isGuest = !localStorage.getItem('token');
             let message = '';
-            if(isGuest){
-                message = `\n\n Gdybyś był zalogowany, otrzymałbyś ${pointsEarned} XP! Zaloguj się, aby zbierać odznaki.`
-            }else{
+
+            if (isGuest) {
+                message = `Wynik: ${scorePercentage}%\n\nGdybyś był zalogowany, otrzymałbyś ${pointsEarned} XP!`;
+            } else {
                 message = `Zadanie zakończone! \nWynik: ${scorePercentage}% \nGwiazdki: ${stars} \nXP: +${pointsEarned}`;
-                if(isLevelUp){
-                    message += "Gratulacje! Awansowałeś/aś na nowy poziom.";
-                }
-                if(newBadges && newBadges.length>0){
-                    message += `\n\nZdobyte nowe odznaki:\n- ${newBadges.join('\n- ')}`;
-                }
+                if (isLevelUp) message += "\n\nGratulacje! Awansowałeś/aś na nowy poziom.";
+                if (newBadges?.length > 0) message += `\n\nNowe odznaki:\n- ${newBadges.join('\n- ')}`;
             }
-            alert(message);
-        }catch (error){
+
+            setBackendResult(message);
+            setIsFinished(true);
+            if (onFinish) onFinish();
+        } catch (error) {
             console.error("Błąd zapisu postępu", error);
+            alert("Nie udało się zapisać postępu na serwerze.");
         }
     };
-    const isChecked = results !== null;
-    
-    //console.log(isChecked);
+
+    const reset = () => {
+        setCurrentIndex(0);
+        setUserAnswers({});
+        setResults({});
+        setIsCurrentAnswerChecked(false);
+        setIsFinished(false);
+        setStartTime(Date.now());
+    };
+
+    if (isFinished) {
+        return (
+            <div className="finish-card">
+                <p>Udało Ci się uzupełnić wszystkie zdania!</p>
+                {backendResult && (
+                    <p>{backendResult}</p>
+                )}
+                <button onClick={() => window.location.reload()} className="nextBtn">Zagraj jeszcze raz</button>
+            </div>
+        );
+    }
+
+    const parts = currentItem.sentence.split(/_{2,}/);
+    const correct = isCurrentAnswerChecked ? results[currentItem.id] : null;
+    const inputClass = correct === null ? "" : (correct ? "input-correct" : "input-wrong");
     return (
-       <div className="parentSentenceSolver">
-            <p>Uzupełnij zdania podanym słowem w odpowiedniej formie.</p>
-            {data.map((item) => {
-                const parts = item.sentence.split(/_{2,}/);
-                const correct = results ? results[item.id] : null;
-                return (
-                    <div key={item.id} className="sentenceMapped">
-                        <span>{parts[0]}</span>
+        <div className="parentSentenceSolver">
+            <div className="solver-progress">
+                Zdanie <span>{currentIndex + 1}</span> z {data.length}
+            </div>
+
+            <div className="sentence-card">
+                <div className="sentence-content">
+                    <span className="text-part">{parts[0]}</span>
+                    <div className="input-wrapper">
                         <input
                             type="text"
-                            value={userAnswers[item.id] || ''}
-                            onChange={(e) => handleInputChange(item.id, e.target.value)}
-                            disabled={isChecked}
-                            placeholder="wpisz..."
-                            style={{
-                                border: 'none',
-                                borderBottom: correct === null 
-                                    ? '2px solid #333' 
-                                    : (correct ? '3px solid green' : '3px solid red'),
-                                outline: 'none',
-                                padding: '0 5px',
-                                width: '120px',
-                                textAlign: 'center',
-                                fontSize: '18px'
-                            }}
+                            className={`sentence-input ${inputClass}`}
+                            value={userAnswers[currentItem.id] || ''}
+                            onChange={(e) => handleInputChange(currentItem.id, e.target.value)}
+                            disabled={isCurrentAnswerChecked}
+                            placeholder="..."
                         />
-
-                        <span> ({item.baseWord} {item.grammarHint}) </span>
-                        <span>{parts[1]}</span>
-                        {correct === false && (
-                            <p style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>
-                                {item.explenation}
-                            </p>
-                        )}
+                        <span className="grammar-hint">
+                            ({currentItem.baseWord} → {currentItem.grammarHint})
+                        </span>
                     </div>
-                );
-            })}       
-            <div style={{ marginTop: '20px' }}>   
-                {!isChecked ? (
-                    <button 
-                        onClick={()=>checkAnswers()}
-                        style={{ backgroundColor: '#0084ffff', color: 'white', border: 'none', padding: '5px 15px', borderRadius: '4px', marginTop:'10px' }}
-                    >
-                        Sprawdź
+                    <span className="text-part">{parts[1]}</span>
+                </div>
+
+                {correct === false && (
+                    <div className="explanation-bubble-help">
+                        <span className="bulb"></span> {currentItem.explenation}
+                    </div>
+                )}
+            </div>
+
+            <div className="solver-actions">
+                {!isCurrentAnswerChecked ? (
+                    <button onClick={handleCheckCurrent} className="checkBtn">
+                        Sprawdź! 
                     </button>
-                ):(
-                    <button onClick={() => { setResults(null); setUserAnswers({}); setStartTime(Date.now()); }} style={{ backgroundColor: '#0084ffff', color: 'white', border: 'none', padding: '5px 15px', borderRadius: '4px', marginTop:'10px' }}>
-                        Spróbuj ponownie
+                ) : (
+                    <button onClick={handleNextOrSubmit} className={`nextBtn ${correct ? 'pulse' : ''}`}>
+                        {currentIndex < data.length - 1 ? "Następne zdanie" : "Zakończ zadanie"}
                     </button>
                 )}
-            </div> 
+            </div>
         </div>
     );
 }
+
 export default SentenceSolver;

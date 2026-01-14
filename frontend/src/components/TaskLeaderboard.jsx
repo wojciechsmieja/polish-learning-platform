@@ -31,22 +31,28 @@ function TaskLeaderboard({ taskId, refreshTrigger }) {
     )}; 
 
     return (
-        <div className="sidebarStyle">
-            <h4 className='h4TaskLeaderboard'>Najszybsi użytkownicy (100%)</h4>
-            <table style={{ width: '100%', fontSize: '14px' }}>
-                <tbody>
-                    {entries.map((entry, index) => (
-                        <tr key={index} className={index === 0 ? 'firstPlaceTaskLeaderboard' : index === 1 ? 'secondPlaceTaskLeaderboard' : index === 2 ? 'thirdPlaceTaskLeaderboard' : 'entryStyle'}>
-                            <td>
-                                <Link to={`/profile/${entry.username}`} style={{ textDecoration: 'none', color: '#007bff' }}>
-                                    {index + 1}. <strong>{entry.username}</strong>
-                                </Link>
-                            </td>
-                            <td style={{ textAlign: 'center', color: '#666' }}>{entry.secondsSpent}s</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+        <div className="sidebar-leaderboard">
+            <h4 className='leaderboard-title'>Najszybsi (100%)</h4>
+            <div className="leaderboard-list">
+                {entries.map((entry, index) => (
+                    <div 
+                        key={index} 
+                        className={`leaderboard-entry rank-${index + 1}`}
+                    >
+                        <div className="rank-badge">
+                            {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}
+                        </div>
+                        <div className="user-info">
+                            <Link to={`/profile/${entry.username}`} className="user-link">
+                                {entry.username}
+                            </Link>
+                        </div>
+                        <div className="time-value">
+                            {formatTime(entry.secondsSpent)}
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }

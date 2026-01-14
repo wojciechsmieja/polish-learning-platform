@@ -1,6 +1,7 @@
 package pl.eduapp.learning_platform.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +14,8 @@ import java.time.OffsetDateTime;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name="user_task_attemps")
+@AllArgsConstructor
+@Table(name="user_task_attempts")
 public class UserTaskAttempt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

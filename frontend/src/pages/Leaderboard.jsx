@@ -4,19 +4,23 @@ import api from '../api';
 import './Leaderboard.css';
 
 function Leaderboard() {
-    const [leaders, setLeaders] = useState([]);
+    const [data, setData] = useState({ topTen: [], currentUserEntry: null, currentUserRank: null });
+    const loggedInUser = localStorage.getItem('username'); 
+
     useEffect(() => {
         api.get('/api/profile/leaderboard')
-            .then(res => setLeaders(res.data))
+            .then(res => setData(res.data))
             .catch(err => console.error(err));
     }, []);
-    console.log(leaders);
+
+    const isUserInTopTen = data.topTen.some(user => user.username === loggedInUser);
+
     return (
         <div className='parent'>
             <h2>🏆 Ranking Globalny</h2>
-            <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+            <table className='leaderboard-table'>
                 <thead>
-                    <tr style={{ borderBottom: '2px solid #ddd' }}>
+                    <tr>
                         <th>#</th>
                         <th>Użytkownik</th>
                         <th>Poziom</th>
@@ -24,24 +28,39 @@ function Leaderboard() {
                     </tr>
                 </thead>
                 <tbody>
-                    {leaders.map((user, index) => (
-                        
-                        <tr key={user.username} className={index < 3 ? 'podium' : 'rest'}>
+                    {data.topTen.map((user, index) => (
+                        <tr 
+                            key={user.username} 
+                            
+                            className={`${index < 3 ? 'podium' : 'rest'} ${user.username === loggedInUser ? 'is-me' : ''}`}
+                        >
+                            <td>{index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}</td>
                             <td>
-                                {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}
+                                <Link to={`/profile/${user.username}`}>{user.username}</Link>
+                                {user.username === loggedInUser && " (Ty)"}
                             </td>
-                            <td style={{ fontWeight: 'bold' }}>
-                                <Link to={`/profile/${user.username}`} style={{ textDecoration: 'none', color: '#007bff' }}>
-                                    {user.username}
-                                </Link>
-                            </td>
-                                
                             <td>{user.level}</td>
                             <td>{user.totalPoints}</td>
-                            
                         </tr>
-                        
                     ))}
+
+                    {!isUserInTopTen && data.currentUserEntry && (
+                        <>
+                            <tr className='dots-row'><td colSpan="4">...</td></tr>
+                            <tr className="is-me">
+                                <td>{data.currentUserRank}</td>
+                                <td>
+                                    <Link to={`/profile/${data.currentUserEntry.username}`}>
+                                        {data.currentUserEntry.username}
+                                    
+                                    </Link>
+                                    {" (Ty)"}
+                                </td>
+                                <td>{data.currentUserEntry.level}</td>
+                                <td>{data.currentUserEntry.totalPoints}</td>
+                            </tr>
+                        </>
+                    )}
                 </tbody>
             </table>
         </div>

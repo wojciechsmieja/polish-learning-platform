@@ -20,5 +20,8 @@ public interface TaskMapper {
     TaskQuizOptionResponseDTO toQuizOptionDTO(TaskQuizOption dto);
     TaskSentenceResponseDTO toSentenceDTO(TaskSentenceDetail dto);
     TaskAnalysisDetailResponseDTO toAnalysisDTO(TaskAnalysisDetail dto);
+    @Mapping(source = "createdBy.username", target="createdByUsername")
     TaskShortResponse toShortDTO(Task dto);
+    @Mapping(source = "createdBy.username", target="createdByUsername")
+    TaskModerationResponse toModerationDTO(Task dto);
 }

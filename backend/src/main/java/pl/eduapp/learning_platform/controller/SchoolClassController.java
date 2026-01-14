@@ -45,4 +45,11 @@ public class SchoolClassController {
     public ResponseEntity<ClassDetailsResponse> getClassDetails(@PathVariable Long id, Principal principal) {
         return ResponseEntity.ok(schoolClassService.getClassDetails(id, principal.getName()));
     }
+    @PatchMapping("/deactivate/{id}")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<String> deactivateClass(@PathVariable Long id, Principal principal) {
+        schoolClassService.deactivateClass(id, principal.getName());
+        return ResponseEntity.ok("Klasa została usunięta");
+    }
+
 }

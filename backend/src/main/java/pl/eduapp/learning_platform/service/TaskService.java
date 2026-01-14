@@ -6,11 +6,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.eduapp.learning_platform.constant.TaskStatus;
+import pl.eduapp.learning_platform.constant.TaskSubject;
 import pl.eduapp.learning_platform.constant.TaskType;
-import pl.eduapp.learning_platform.dto.TaskLeaderboardDTO;
-import pl.eduapp.learning_platform.dto.TaskRequestDTO;
-import pl.eduapp.learning_platform.dto.TaskResponseDTO;
-import pl.eduapp.learning_platform.dto.TaskShortResponse;
+import pl.eduapp.learning_platform.dto.*;
 import pl.eduapp.learning_platform.entity.*;
 import pl.eduapp.learning_platform.mapper.TaskMapper;
 import pl.eduapp.learning_platform.repository.TaskRepository;
@@ -62,6 +61,12 @@ public class TaskService {
         if(task.getAnalysisDetails() != null) {
             task.getAnalysisDetails().forEach(s -> s.setTask(task));
         }
+        if("ADMIN".equals(user.getRole())){
+            task.setStatus(TaskStatus.APPROVED);
+        }else{
+            task.setStatus(TaskStatus.PENDING);
+        }
+        task.setSubject(TaskSubject.POLSKI);
         Task savedTask = taskRepository.save(task);
         System.out.println("Saved task!!! ");
         return taskMapper.toDTO(savedTask);
@@ -90,7 +95,7 @@ public class TaskService {
     }
     public List<TaskShortResponse> getTasksByTypeAndPublic(TaskType taskType, String username) {
         //get tasks
-        List<Task> tasks = taskRepository.findByTaskTypeAndPublicTaskTrue(taskType);
+        List<Task> tasks = taskRepository.findByTaskTypeAndPublicTaskTrueAndStatusOrderByIdDesc(taskType, TaskStatus.APPROVED);
         //get user
         User user = (username != null) ? userRepository.findByUsername(username).orElse(null) :null;
         return tasks.stream().map(task -> {
@@ -127,6 +132,22 @@ public class TaskService {
         task.setPublicTask(isPublic);
         taskRepository.save(task);
     }
+    @Transactional
+    public void updateTaskStatus(Long taskId, TaskStatus newStatus){
+        Task task = taskRepository.findById(taskId).orElseThrow(()-> new RuntimeException("Task not found while trying to get the task"));
 
+        if(newStatus == TaskStatus.REJECTED){
+            task.setStatus(TaskStatus.REJECTED);
+        }else{
+            task.setStatus(newStatus);
+        }
+        taskRepository.save(task);
+    }
+    public List<TaskModerationResponse> getPendingTasks(){
+        return taskRepository.findByStatus(TaskStatus.PENDING)
+                .stream()
+                .map(taskMapper::toModerationDTO)
+                .toList();
+    }
 
 }

@@ -76,6 +76,7 @@ public class SchoolClassService {
                 if (!bestResults.containsKey(taskId) || attempt.getScorePercentage() > bestResults.get(taskId).getBestScore()) {
                     bestResults.put(taskId, new StudentTaskProgressDTO(
                             attempt.getTask().getTitle(),
+                            attempt.getTask().getTaskType(),
                             attempt.getTask().getDescription(),
                             attempt.getScorePercentage(),
                             attempt.getStars(),
@@ -119,7 +120,7 @@ public class SchoolClassService {
     public List<SchoolClassResponse> getStudentSchoolClasses(String studentUsername) {
         User student = userRepository.findByUsername(studentUsername)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        List<ClassMember> memberships = classMemberRepository.findAllByUser(student);
+        List<ClassMember> memberships = classMemberRepository.findAllByUserAndSchoolClassActiveClassTrue(student);
         return memberships.stream()
                 .map(m -> {
                     SchoolClass sc = m.getSchoolClass();
@@ -128,6 +129,18 @@ public class SchoolClassService {
                 })
                 .toList();
     }
+    @Transactional
+    public void deactivateClass(Long classId, String teacherUsername) {
+        SchoolClass schoolClass = schoolClassRepository.findById(classId)
+                .orElseThrow(() -> new RuntimeException("Nie znaleziono klasy"));
+
+        if (!schoolClass.getCreatedBy().getUsername().equals(teacherUsername)) {
+            throw new RuntimeException("Nie masz uprawnień do usunięcia tej klasy");
+        }
+        schoolClass.setActiveClass(false);
+        schoolClassRepository.save(schoolClass);
+    }
+
 
     //mapper
     private SchoolClassResponse mapToResponse(SchoolClass schoolClass, int memberCount) {

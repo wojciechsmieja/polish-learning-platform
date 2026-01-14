@@ -1,105 +1,121 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import api from '../../api';
 import './QuizSolver.css';
+
 function QuizSolver({ data, taskId, onFinish }) {
+    const [currentIndex, setCurrentIndex] = useState(0); 
     const [userAnswers, setUserAnswers] = useState({});
-    const [results, setResults] = useState(null);
-    const [startTime, setStartTime] = useState(Date.now());
+    const [isCurrentAnswerChecked, setIsCurrentAnswerChecked] = useState(false); 
+    const [startTime] = useState(Date.now());
+    const [isFinished, setIsFinished] = useState(false); 
+    const [result, setResult] =useState('');
+
+    const currentQuestion = data[currentIndex];
 
     const handleOptionChange = (questionId, optionId) => {
+        if (isCurrentAnswerChecked) return; 
         setUserAnswers(prev => ({ ...prev, [questionId]: optionId }));
     };
 
-    const checkQuiz = async () => {
-        const newResults = {};
-        data.forEach((question) => {
-            const selectedOptionId = userAnswers[question.id];
-            const selectedOption = question.options.find(opt => 
-                opt.id === selectedOptionId);
-            if(selectedOption){
-                newResults[question.id]=selectedOption.correctOption;
-            }else{
-                newResults[question.id]=false;
-            }
-        });
-        setResults(newResults);
-        try{
+    const handleCheckCurrentQuestion = () => {
+        if (!userAnswers[currentQuestion.id]) {
+            alert("Wybierz jedną odpowiedź!");
+            return;
+        }
+        setIsCurrentAnswerChecked(true);
+    };
+
+    const handleNext = () => {
+        if (currentIndex < data.length - 1) {
+            setCurrentIndex(prev => prev + 1);
+            setIsCurrentAnswerChecked(false);
+        } else {
+            submitFinalResults();
+        }
+    };
+
+    const submitFinalResults = async () => {
+        setResult('');
+        try {
             const endTime = Date.now();
-            const timeSpentSeconds = Math.floor((endTime-startTime)/1000);
+            const timeSpentSeconds = Math.floor((endTime - startTime) / 1000);
             const payload = {
                 taskId: taskId,
                 answers: userAnswers,
                 timeSpentSeconds: timeSpentSeconds
             };
             const response = await api.post('/api/progress/submit', payload);
-            const {scorePercentage, stars, pointsEarned, isLevelUp, newBadges} = response.data;
-            let isGuest = !localStorage.getItem('token');
-            let message = '';
+            console.log(response);
+            const { scorePercentage, stars, pointsEarned, isLevelUp, newBadges } = response.data;
 
-            if(isGuest){
-                message = `\n\n Gdybyś był zalogowany, otrzymałbyś ${pointsEarned} XP! Zaloguj się, aby zbierać odznaki.`
-            }else{
-                message = `Zadanie zakończone! \nWynik: ${scorePercentage}% \nGwiazdki: ${stars} \nXP: +${pointsEarned}`;
-                if(isLevelUp){
-                    message += "Gratulacje! Awansowałeś/aś na nowy poziom.";
-                }
-                if(newBadges && newBadges.length>0){
-                    message += `\n\nZdobyte nowe odznaki:\n- ${newBadges.join('\n- ')}`;
-                }
-            }
-            console.log(response.data);
-            alert(message);
-            console.log(message);
-            if(onFinish) onFinish();
-        }catch (error){
-            console.error("Błąd podczas wysyłania wyniku: ", error);
-            alert("Nie udało się zapisać postepów");
+            let message = `Wynik: ${scorePercentage}% \nGwiazdki: ${stars} \nXP: +${pointsEarned} `;
+            if (isLevelUp) message += "\n\nUdało ci się awansować na nowy poziom!";
+            
+            setResult(message);
+            setIsFinished(true);
+            if (onFinish) onFinish();
+        } catch (error) {
+            setResult("Nie udało się zapisać wyniku.");
         }
     };
-    const isChecked = results !== null;
-    const getOptionColor = (opt, qId) => {
-        if (!isChecked) return '#eee';
-        if (opt.correctOption) return 'green';
-        if (userAnswers[qId] === opt.id && !opt.correctOption) return 'red';
-        return '#eee';
+
+    const getOptionClass = (opt) => {
+        const isSelected = userAnswers[currentQuestion.id] === opt.id;
+        if (!isCurrentAnswerChecked) {
+            return isSelected ? "quiz-option selected" : "quiz-option";
+        }
+        if (opt.correctOption) return "quiz-option correct";
+        if (isSelected && !opt.correctOption) return "quiz-option wrong";
+        return "quiz-option disabled";
     };
-    useEffect(()=>{
-        console.log(results);
-    },[results]);
-    //console.log(isChecked);
+
+    if (isFinished) {
+        return (
+            <div className='quiz-finish-screen'>
+                <h2>Zadanie ukończone!</h2>
+                {result && (
+                    <p>{result}</p>
+                )}
+                <button onClick={() => window.location.reload()} className='nextBtn'>Zagraj jeszcze raz</button>
+            </div>
+        );
+    }
+
     return (
-         <div className='parentQuizSolver'>
-            {data.map((q) => (
-                <div key={q.id} className='questionCard'>
-                    <h4 className='h4QuizSolver'>{q.question}</h4>
-                    {q.options.map((opt) => (
-                        <div key={opt.id} className='quizOption'>
-                            <label style={{ 
-                                color: getOptionColor(opt, q.id),
-                                fontWeight: isChecked && opt.correctOption ? 'bold' : 'normal',
-                                cursor: isChecked ? 'default' : 'pointer'
-                            }}>
-                                <input 
-                                    type="radio" 
-                                    name={`question-${q.id}`}
-                                    value = {opt.id}
-                                    checked={userAnswers[q.id] === opt.id} 
-                                    onChange={() => handleOptionChange(q.id, opt.id)}
-                                    disabled={isChecked}
-                                />
-                                {opt.optionText}
-                            </label>
-                        </div>
+        <div className='parentQuizSolver'>
+            <div className="quiz-progress">
+                Pytanie <span>{currentIndex + 1}</span> z {data.length}
+            </div>
+
+            <div className='question-card'>
+                <h3 className='question-title'>{currentQuestion.question}</h3>
+                
+                <div className="options-container">
+                    {currentQuestion.options.map((opt) => (
+                        <label key={opt.id} className={getOptionClass(opt)}>
+                            <input 
+                                type="radio" 
+                                name={`question-${currentQuestion.id}`}
+                                checked={userAnswers[currentQuestion.id] === opt.id} 
+                                onChange={() => handleOptionChange(currentQuestion.id, opt.id)}
+                                disabled={isCurrentAnswerChecked}
+                                style={{ display: 'none' }} 
+                            />
+                            <span className="option-indicator"></span>
+                            {opt.optionText}
+                        </label>
                     ))}
                 </div>
-            ))}
+            </div>
 
-            <div style={{ marginTop: '20px' }}>
-                {!isChecked ? (
-                    <button onClick={checkQuiz} style={{ backgroundColor: '#0084ffff', color: 'white', border: 'none', padding: '5px 15px', borderRadius: '4px', marginTop:'10px' }}>Sprawdź odpowiedzi</button>
+            <div className='quiz-actions'>
+                {!isCurrentAnswerChecked ? (
+                    <button onClick={handleCheckCurrentQuestion} className='checkBtn'>
+                        Sprawdź odpowiedź!
+                    </button>
                 ) : (
-                    <button onClick={() => { setResults(null); setUserAnswers({}); setStartTime(Date.now()); }} style={{ backgroundColor: '#0084ffff', color: 'white', border: 'none', padding: '5px 15px', borderRadius: '4px', marginTop:'10px' }}>
-                        Spróbuj ponownie
+                    <button onClick={handleNext} className='nextBtn'>
+                        {currentIndex < data.length - 1 ? "Następne pytanie" : "Zakończ"}
                     </button>
                 )}
             </div>

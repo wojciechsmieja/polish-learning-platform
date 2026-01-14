@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface ClassMemberRepository extends JpaRepository<ClassMember, Long> {
     List<ClassMember> findAllBySchoolClass(SchoolClass schoolClass);
-    List<ClassMember> findAllByUser(User user);
+    List<ClassMember> findAllByUserAndSchoolClassActiveClassTrue(User user);
     boolean existsBySchoolClassAndUser(SchoolClass schoolClass, User user);
 }

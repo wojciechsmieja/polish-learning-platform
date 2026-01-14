@@ -1,17 +1,219 @@
-.taskGrid{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    padding: 0;
-    list-style: none;
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
+.tasks-container {
+    max-width: 900px;
+    min-width: 40vw;
+    margin: 100px auto 40px auto; 
+    padding: 20px;
+    font-family: 'Nunito', sans-serif;
 }
-.taskCard{
-    border: 1px solid #ddd;
-    padding: 15px;
-    border-radius: 8px;
-    background: #bebdbd;
-    color: black;
+
+.tasks-main-title {
+    color: #ff6b6b;
+    font-size: 2.2rem;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 5px dotted #ffde59;
+    padding-bottom: 15px;
 }
-.publicTaskParent{
-    margin-top: 5em;
+
+/* FILTRY */
+.filter-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 30px;
+    box-shadow: 0 10px 0 rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+    border: 3px solid #e0f7fa;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-group label {
+    font-weight: 700;
+    color: #4b7bec;
+}
+
+.kids-select {
+    padding: 8px 15px;
+    background-color: #d4dce4;
+    color: #4b7bec;
+    border-radius: 15px;
+    border: 2px solid #a2d2ff;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    outline: none;
+    cursor: pointer;
+}
+
+.kids-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    color: #4b7bec;
+}
+
+.kids-checkbox-label input {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.group-card {
+    background-color: white;
+    border-radius: 25px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 0 rgba(0,0,0,0.05);
+    border: 3px solid #f1f2f6;
+}
+
+.group-header {
+    background-color: #4b7bec;
+    color: white;
+    padding: 18px 25px;
+    font-weight: 900;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s;
+}
+
+.group-header:hover {
+    background-color: #3867d6;
+}
+
+.group-content {
+    padding: 10px 20px 20px 20px;
+    background-color: #fdfdfe;
+}
+
+/* KATEGORIE WEWNĄTRZ */
+.syntax-header {
+    background-color: #f1f2f6;
+    padding: 12px 20px;
+    margin-top: 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    color: #4b6584;
+    transition: all 0.2s;
+}
+
+.syntax-header.open {
+    background-color: #e0f7fa;
+    color: #4b7bec;
+}
+
+.task-count {
+    font-size: 0.8rem;
+    background: white;
+    padding: 2px 10px;
+    border-radius: 10px;
+}
+
+/* RZĄD ZADANIA */
+.tasks-list {
+    margin-top: 5px;
+    padding-left: 15px;
+    border-left: 4px dashed #d1d8e0;
+}
+
+.task-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 2px solid #f1f2f6;
+}
+
+.task-top-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.variant-label {
+    color: #2f3542;
+    font-size: 1.1rem;
+}
+
+.task-desc {
+    color: #747d8c;
+    font-size: 0.95rem;
+    margin: 5px 0;
+}
+
+/* ODZNAKI I GWIAZDKI */
+.diff-badge {
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 900;
+    color: white;
+}
+.diff-1 { background-color: #20bf6b; }
+.diff-2 { background-color: #fa8231; }
+.diff-3 { background-color: #eb3b5a; }
+
+.completed-label {
+    background-color: #e3fcef;
+    color: #0fb9b1;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-weight: 900;
+    font-size: 0.8rem;
+}
+
+.star { font-size: 1.3rem; margin-right: 2px; }
+.star.gold { color: #ffde59; text-shadow: 1px 1px 0 rgba(0,0,0,0.1); }
+.star.gray { color: #d1d8e0; }
+
+/* PRZYCISK GRAJ */
+.solve-btn {
+    margin-left: 1em;
+    background-color: #20bf6b;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #138d4e;
+    transition: all 0.2s;
+    text-transform: uppercase;
+}
+
+.solve-btn:hover {
+    transform: translateY(-2px);
+    background-color: #26de81;
+}
+
+.solve-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 #138d4e;
+}
+
+.loader, .no-tasks-info {
+    text-align: center;
+    margin-top: 100px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #4b7bec;
 }

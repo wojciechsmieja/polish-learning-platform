@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
+.classes-page-container {
+    max-width: 900px;
+    margin: 100px auto 40px auto; 
+    padding: 20px;
+    font-family: 'Nunito', sans-serif;
+    text-align: center;
+}
+
+.classes-title {
+    color: #ff6b6b;
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin-bottom: 30px;
+}
+
+.join-class-box {
+    background-color: white;
+    padding: 30px;
+    border-radius: 40px;
+    border: 5px solid #ffde59; 
+    box-shadow: 0 10px 0 rgba(255, 222, 89, 0.2);
+    margin-bottom: 40px;
+}
+
+.join-class-box h4 {
+    color: #4b7bec;
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+    font-weight: 900;
+}
+
+.join-class-box p {
+    color: #4b6584;
+    margin-bottom: 20px;
+}
+
+.join-form {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.join-input-code {
+    padding: 15px 25px;
+    border-radius: 25px;
+    border: 3px solid #e0f7fa;
+    background-color: #f0faff;
+    font-family: 'Nunito', sans-serif;
+    color: #44474d;
+    font-weight: 900;
+    font-size: 1.2rem;
+    text-align: center;
+    outline: none;
+    transition: all 0.3s;
+    letter-spacing: 2px;
+}
+
+.join-input-code:focus {
+    border-color: #4b7bec;
+    background-color: #fff;
+}
+
+.join-btn {
+    background-color: #20bf6b;
+    color: white;
+    border: none;
+    padding: 15px 35px;
+    border-radius: 50px;
+    font-weight: 900;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 6px 0 #138d4e;
+    transition: all 0.2s;
+}
+
+.join-btn:hover {
+    transform: translateY(-2px);
+}
+
+.join-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #138d4e;
+}
+
+.divider-line {
+    height: 6px;
+    background: #e0f7fa;
+    border-radius: 10px;
+    margin: 40px 0;
+}
+
+.classes-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+}
+
+.class-card {
+    background-color: white;
+    width: 240px;
+    padding: 25px;
+    border-radius: 35px;
+    border: 3px solid #f1f2f6;
+    box-shadow: 0 8px 0 rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.class-card:hover {
+    transform: scale(1.05) rotate(-1deg);
+    border-color: #a2d2ff;
+}
+
+.class-card-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.class-card h3 {
+    margin: 0;
+    color: #2f3542;
+    font-weight: 900;
+    font-size: 1.4rem;
+}
+
+.class-card p {
+    color: #747d8c;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+.class-card p span {
+    color: #4b7bec;
+    font-weight: 700;
+}
+
+.no-classes-info {
+    color: #a2d2ff;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.loader {
+    font-size: 1.5rem;
+    color: #4b7bec;
+    font-weight: 700;
+}

@@ -6,11 +6,11 @@ function Home() {
         <div className='page'>
             <div className="parentHome">
                 <h1>Witaj na stronie</h1>
-                <p>To jest Twoja aplikacja do nauki składni jezyka polskiego.</p>
+                <p>To jest Twoja aplikacja do nauki składni języka polskiego. Możesz tutaj wykonywać zadania, aby poprawić swoje zdolności związane ze składnią i gramatyką języka polskiego.</p>
                 {!token ? (
                 <>
-                    <Link to="/register" className='rejestruj' style={{ backgroundColor: '#0084ffff', color: 'white', border: 'none', padding: '5px 15px', borderRadius: '4px', marginTop:'10px' }}>Zarejestruj się</Link>
-                    <Link to="/login" className='rejestruj' style={{ backgroundColor: '#0084ffff', color: 'white', border: 'none', padding: '5px 15px', borderRadius: '4px',marginTop:'20px' }}>Zaloguj się</Link>
+                    <Link to="/register" className='home-btn'>Zarejestruj się</Link>
+                    <Link to="/login" className='home-btn' >Zaloguj się</Link>
                 </>
                 ) : (<></>)
                 }

@@ -9,6 +9,7 @@ function CreateTask() {
         difficulty: 1,
         publicTask: true,
         syntaxType: '',
+        subject:'POLSKI',
         quizDetails: [],
         sentenceDetails: [],
         analysisDetails: []
@@ -19,15 +20,15 @@ function CreateTask() {
         console.log("Wysyłany json:\n ",JSON.stringify(task, null, 2));
         try {
             await api.post('/api/tasks/create', task);
-            alert("Zadanie dodane pomyślnie!");
+            if(localStorage.getItem('role')==="TEACHER"){
+                alert("Zadanie dodane pomyślnie! Teraz czeka na akceptację u administratora.");
+            }else{
+                alert("Dodano zadanie!")
+            }
         } catch (error) {
             alert("Błąd: " + (error.response?.data || "Nie udało się dodać zadania"));
         }
-    };/*
-    const handleSubmit = () => {
-        e.preventDefault();
-        console.log(task);
-    }*/
+    };
 
     const addQuizQuestion = () => {
         setTask({
@@ -172,7 +173,6 @@ function CreateTask() {
                     </div>
                 )}
 
-                {/*SEKCJA ZDAŃ*/}
                 {task.taskType === 'COMPLETE_SENTENCE' && (
                     <div style={sectionStyle}>
                         <h3>Zdania (użyj ___ dla luki)</h3>

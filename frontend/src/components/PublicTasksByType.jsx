@@ -7,11 +7,17 @@ function PublicTasksByType() {
     const { type } = useParams();
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [difficulty, setDifficulty] = useState('ALL');
+    const [onlyUncompleted, setOnlyUncompleted] = useState(false);
+    const [expandedTitles, setExpandedTitles] = useState({});
+    const [expandedCategories, setExpandedCategories] = useState({});
+
     const typeLabel = {
         QUIZ: "QUIZY",
         COMPLETE_SENTENCE: "UZUPEŁNIANIE ZDAŃ",
-        ANALYSIS: "ANALIZY"
-    }
+        ANALYSIS: "ANALIZA ZDAŃ"
+    };
+
     useEffect(() => {
         const fetchTasks = async () => {
             setLoading(true);
@@ -20,41 +26,148 @@ function PublicTasksByType() {
                 setTasks(response.data);
             } catch (error) {
                 console.error("Błąd pobierania zadań:", error);
-                alert("Nie udało się pobrać zadań.");
             } finally {
                 setLoading(false);
             }
         };
-
         fetchTasks();
-    }, [type]); 
-    if (loading) return <p>Ładowanie zadań...</p>;
-    return (
-        <div className="publicTaskParent">
-            <h2>Dostępne {typeLabel[type] ?? type}</h2>
-            {tasks.length === 0 ? (
-                <p>Brak dostępnych zadań tego typu.</p>
-            ) : (
-                <ul className='taskGrid'>
-                    {tasks.map(task => (
-                        <li key={task.id} className='taskCard'>
-                            <h3>{task.title}</h3>
-                            <p>{task.description}</p>
-                            <small>Trudność: {task.difficulty}/3</small>
-                            <div className="stars">
-                                {[1, 2, 3].map(star => (
-                                    <span key={star} style={{ color: star <= task.userStars ? 'gold' : 'grey' }}>
-                                        ★
-                                    </span>
-                                ))}
-                            </div>
+    }, [type]);
 
-                            <Link to={`/tasks/${task.id}`}>
-                                <button style={{ backgroundColor: '#0084ffff', color: 'white', border: 'none', padding: '5px 15px', borderRadius: '4px', marginTop:'10px' }}>Rozwiąż</button>
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
+    const filteredTasks = tasks.filter(task => {
+        const matchesDiff = difficulty === 'ALL' || task.difficulty.toString() === difficulty;
+        const matchesUncompleted = !onlyUncompleted || !task.completed; 
+        return matchesDiff && matchesUncompleted;
+    }).sort((a,b) => a.difficulty - b.difficulty);
+
+    const toggleCategory = (title, syntax) => {
+        const key = `${title}-${syntax}`;
+        setExpandedCategories(prev => ({ ...prev, [key]: !prev[key] }));
+    };
+
+    const toggleTitle = (title) => {
+        setExpandedTitles(prev => ({ ...prev, [title]: !prev[title] }));
+    };
+
+    const renderStars = (count) => {
+        return [1, 2, 3].map(num => (
+            <span key={num} className={num <= count ? "star gold" : "star gray"}>★</span>
+        ));
+    };
+
+    const getDifficultyBadge = (diff) => {
+        const labels = { 1: 'Łatwy', 2: 'Średni', 3: 'Trudny' };
+        return <span className={`diff-badge diff-${diff}`}>{labels[diff]}</span>;
+    };
+
+    const groupedTasks = filteredTasks.reduce((groups, task) => {
+        const title = task.title;
+        const syntax = task.syntaxType || "OGÓLNE"; 
+        if (!groups[title]) groups[title] = {};
+        if (!groups[title][syntax]) groups[title][syntax] = [];
+        groups[title][syntax].push(task);
+        return groups;
+    }, {});
+
+    if (loading) return <div className="loader">Ładowanie zadań...</div>;
+
+    return (
+        <div className="tasks-container">
+            <h2 className="tasks-main-title">
+                {typeLabel[type] || type}
+            </h2>
+            {/*filters*/}
+            <div className="filter-panel">
+                <div className="filter-group">
+                    <label>Trudność:</label>
+                    <select 
+                        onChange={(e) => setDifficulty(e.target.value)} 
+                        value={difficulty}
+                        className="kids-select"
+                    >
+                        <option value="ALL">Wszystkie</option>
+                        <option value="1">Łatwe</option>
+                        <option value="2">Średnie</option>
+                        <option value="3">Trudne</option>
+                    </select>
+                </div>
+
+                <label className="kids-checkbox-label">
+                    <input 
+                        type="checkbox" 
+                        checked={onlyUncompleted} 
+                        onChange={(e) => setOnlyUncompleted(e.target.checked)} 
+                    /> 
+                    <span>Tylko nieukończone</span>
+                </label>
+            </div>
+
+            {Object.keys(groupedTasks).length === 0 ? (
+                <p className="no-tasks-info">Brak zadań w tej kategorii.</p>
+            ) : (
+                Object.entries(groupedTasks).map(([title, syntaxGroups]) => (
+                    <div key={title} className="group-card">
+                        
+                        <div onClick={() => toggleTitle(title)} className="group-header">
+                            <span>{title.toUpperCase()}</span>
+                            <span className="arrow">{expandedTitles[title] ? '▲' : '▼'}</span>
+                        </div>
+                
+                        
+                        {expandedTitles[title] && (
+                            <div className="group-content">
+                                {Object.entries(syntaxGroups).map(([syntax, tasks]) => {
+                                    const categoryKey = `${title}-${syntax}`;
+                                    const isCatExpanded = expandedCategories[categoryKey];
+                                
+                                    return (
+                                        <div key={syntax} className="syntax-section">
+                                            <div 
+                                                onClick={() => toggleCategory(title, syntax)} 
+                                                className={`syntax-header ${isCatExpanded ? 'open' : ''}`}
+                                            >
+                                                <span>{syntax}</span>
+                                                <span className="task-count">
+                                                    {isCatExpanded ? 'zwiń' : `${tasks.length} zadań`}
+                                                </span>
+                                            </div>
+                                    
+                                            {isCatExpanded && (
+                                                <div className="tasks-list">
+                                                    {tasks.map(task => (
+                                                        <div key={task.id} className="task-row">
+                                                            <div className="task-info">
+                                                                <div className="task-top-line">
+                                                                    <strong className="variant-label">Zadanie #{task.id}</strong>
+                                                                    {getDifficultyBadge(task.difficulty)}
+                                                                    {task.completed && <span className="completed-label">Ukończone</span>}
+                                                                </div>
+                                                                
+                                                                <p className="task-desc">
+                                                                    {task.description || "Kliknij, aby rozwiązać to zadanie"}
+                                                                </p>
+                                                                
+                                                                <div className="stars-container">
+                                                                    <small>Twoje gwiazdki: </small>
+                                                                    {renderStars(task.userStars)}
+                                                                </div>
+                                                            </div>
+                                                    
+                                                            <div className="task-action">
+                                                                <Link to={`/tasks/${task.id}`}>
+                                                                    <button className="solve-btn">Rozwiąż</button>
+                                                                </Link>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                ))
             )}
         </div>
     );

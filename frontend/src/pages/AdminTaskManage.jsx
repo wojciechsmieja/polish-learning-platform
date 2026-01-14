@@ -52,7 +52,7 @@ function AdminTaskManage() {
                             <td>{t.title}</td>
                             <td>{t.description}</td>
                             <td>{t.taskType}</td>
-                            <td>{t.publicTask ? "🟢 Publiczne" : "🔴 Ukryte"}</td>
+                            <td>{t.publicTask ? "Publiczne" : "Ukryte"}</td>
                             <td>
                                 <button style={{backgroundColor: '#0084ffff'}} onClick={() => handleToggleVisibility(t.id, t.publicTask)}>
                                     {t.publicTask ? "Ukryj" : "Opublikuj"}

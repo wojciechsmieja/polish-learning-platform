@@ -48,10 +48,9 @@ function TaskSolver() {
 
     return (
         <div style={{ padding: '20px', display: 'flex', gap: '30px', alignItems: 'flex-start' }}>
-            <div style={{ flex: 1 }}>
+            <div style={{flex: 1 }}>
                 <h1>{task.title}</h1>
                 <p>{task.description}</p>
-                <hr />
                 {renderSolver()}
             </div>
             <aside style={{ marginTop: '80px' }}>

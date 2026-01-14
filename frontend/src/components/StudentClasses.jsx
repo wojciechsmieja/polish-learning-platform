@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import api from '../api';
+import './StudentClasses.css';
 
 function StudentClasses() {
     const [classes, setClasses] = useState([]);
     const [joinCode, setJoinCode] = useState('');
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         fetchMyClasses();
@@ -23,49 +25,55 @@ function StudentClasses() {
 
     const handleJoin = async (e) => {
         e.preventDefault();
+        setError('');
         try {
             const res = await api.post('/api/classes/join', { joinCode });
             setClasses([...classes, res.data]);
             setJoinCode('');
-            alert("Dołączono do klasy: " + res.data.name);
         } catch (err) {
-            alert(err.response?.data?.message || "Nieprawidłowy kod lub już należysz do tej klasy.");
+            setError(err.response?.data?.message || "Kod jest niepoprawny lub już tu jesteś.");
         }
     };
 
     return (
-        <div style={{ padding: '20px' }}>
-            <h2>Twoje Klasy i Grupy</h2>
+        <div className="classes-page-container">
+            <h2 className="classes-title">Moje Klasy i Grupy</h2>
 
-            {/* Dołączanie do klasy */}
-            <div style={{ backgroundColor: '#a8a8a8ff', padding: '20px', borderRadius: '10px', marginBottom: '30px',color:'#000' }}>
-                <h4>Masz kod od nauczyciela? Dołącz do nowej grupy:</h4>
-                <form onSubmit={handleJoin} style={{ display: 'flex', gap: '10px' }}>
+            <div className="join-class-box">
+                <h4>Masz tajny kod od nauczyciela?</h4>
+                <p>Wpisz go tutaj, aby dołączyć do nowej grupy:</p>
+                {error && <div key={error} className="error-bubble">{error}</div>}
+                <form onSubmit={handleJoin} className="join-form">
                     <input 
-                        placeholder="Wpisz 8-znakowy kod" 
+                        className="join-input-code"
+                        placeholder="KOD-123" 
                         value={joinCode}
                         maxLength={8}
                         required
                         onChange={e => setJoinCode(e.target.value.toUpperCase())}
                     />
-                    <button type="submit" style={{ backgroundColor: '#0084ffff', color: 'white', border: 'none', padding: '5px 15px', borderRadius: '4px' }}>
-                        Dołącz
-                    </button>
+                    <button type="submit" className="join-btn">Dołącz!</button>
                 </form>
+                
             </div>
 
-            <hr />
+            <div className="divider-line"></div>
 
-            {loading ? <p>Ładowanie...</p> : (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
-                    {classes.length === 0 ? <p>Nie należysz jeszcze do żadnej klasy.</p> : 
+            {loading ? (
+                <div className="loader">Szukamy Twoich klas...</div>
+            ) : (
+                <div className="classes-grid">
+                    {classes.length === 0 ? (
+                        <p className="no-classes-info">Nie należysz jeszcze do żadnej klasy. Poproś nauczyciela o kod.</p>
+                    ) : (
                         classes.map(c => (
-                            <div key={c.id} style={{ width: '200px', padding: '15px', border: '1px solid #ddd', borderRadius: '8px' }}>
+                            <div key={c.id} className="class-card">
+                                <div className="class-card-icon"></div>
                                 <h3>{c.name}</h3>
-                                <p style={{ fontSize: '14px' }}>Nauczyciel: <strong>{c.teacherUsername}</strong></p>
+                                <p>Nauczyciel: <span>{c.teacherUsername}</span></p>
                             </div>
                         ))
-                    }
+                    )}
                 </div>
             )}
         </div>

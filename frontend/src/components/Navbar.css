@@ -1,27 +1,78 @@
-.navbar{
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
+
+.navbar {
     position: fixed;
-    top:0;
+    top: 0;
     left: 0;
-    width:100%;
-    padding: 10px 20px;
-    border-bottom: 1px solid #ccc;
-
+    width: 100%;
+    padding: 10px 25px;
+    background-color: #b2ebf2; 
+    backdrop-filter: blur(5px); 
+    border-bottom: 4px solid #4b7bec; 
+    
     display: flex;
-    gap:15px;
+    gap: 12px;
     align-items: center;
-
-    background-color: #11130f;
-    z-index: 100;
-
-    flex-wrap: nowrap;
+    z-index: 1000;
     box-sizing: border-box;
+    font-family: 'Nunito', sans-serif;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
-.stretchSpan{
+
+.navbarElement {
+    color: #4b7bec; 
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 8px 15px;
+    border-radius: 20px; 
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+
+.navbarElement:hover {
+    background-color: #f0f5ff;
+    color: #ff6b6b; 
+    transform: translateY(-2px);
+}
+
+.stretchSpan {
     flex-grow: 1;
 }
-.navbarElement {
-    padding-right: 10px;
-    border-right: 1px solid #eee;
-    color:#0084ffff;
+
+
+.welcome-text {
+    color: #4b6584;
+    font-weight: 700;
+    margin-right: 10px;
 }
 
+.welcome-text span {
+    color: #ff6b6b; 
+}
+
+.logout-btn {
+    background-color: #ff7675; 
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-weight: 900;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #d63031; 
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.logout-btn:hover {
+    background-color: #ff5e57;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 0 #d63031;
+}
+
+.logout-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #d63031;
+}
