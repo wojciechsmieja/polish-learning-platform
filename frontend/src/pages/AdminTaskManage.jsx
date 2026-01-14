@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../api';
+import './AdminTaskManage.css';
 
 function AdminTaskManage() {
     const [tasks, setTasks] = useState([]);
@@ -34,40 +35,43 @@ function AdminTaskManage() {
     };
 
     return (
-        <div style={{ padding: '20px', marginTop:'60px' }}>
-            <h2>Zarządzaj zadaniami</h2>
-            <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                    <tr>
-                        <th>Tytuł</th>
-                        <th>Opis</th>
-                        <th>Typ</th>
-                        <th>Status</th>
-                        <th>Akcje</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {tasks.map(t => (
-                        <tr key={t.id}>
-                            <td>{t.title}</td>
-                            <td>{t.description}</td>
-                            <td>{t.taskType}</td>
-                            <td>{t.publicTask ? "Publiczne" : "Ukryte"}</td>
-                            <td>
-                                <button style={{backgroundColor: '#0084ffff'}} onClick={() => handleToggleVisibility(t.id, t.publicTask)}>
-                                    {t.publicTask ? "Ukryj" : "Opublikuj"}
-                                </button>
-                                {/*<button 
-                                    onClick={() => handleDelete(t.id)} 
-                                    style={{ marginLeft: '10px', color: 'red' }}
-                                >
-                                    Usuń trwale
-                                </button>*/}
-                            </td>
+        <div className="admin-wrapper">
+            <div className="admin-card">
+                <h2 className="admin-title">Zarządzaj zadaniami</h2>
+                <table className="manage-table">
+                    <thead>
+                        <tr>
+                            <th>Tytuł</th>
+                            <th>Opis</th>
+                            <th>Typ</th>
+                            <th>Status</th>
+                            <th>Akcje</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {tasks.map(t => (
+                            <tr key={t.id}>
+                                <td className="font-bold">{t.title}</td>
+                                <td>{t.description}</td>
+                                <td><span className="type-badge">{t.taskType}</span></td>
+                                <td>
+                                    <span className={t.publicTask ? "status-public" : "status-hidden"}>
+                                        {t.publicTask ? "Publiczne" : "Ukryte"}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button 
+                                        className="btn-toggle" 
+                                        onClick={() => handleToggleVisibility(t.id, t.publicTask)}
+                                    >
+                                        {t.publicTask ? "Ukryj" : "Opublikuj"}
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }

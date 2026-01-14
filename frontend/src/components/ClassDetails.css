@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
+.details-container {
+    max-width: 1000px;
+    margin: 100px auto 40px auto;
+    padding: 20px;
+    font-family: 'Nunito', sans-serif;
+}
+
+.details-title {
+    color: #ff6b6b;
+    font-size: 2.2rem;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* PASEK FILTRÓW */
+.filter-bar {
+    display: flex;
+    gap: 20px;
+    background-color: #e0f7fa; 
+    padding: 20px;
+    border-radius: 30px;
+    margin-bottom: 30px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    border: 3px solid #b2ebf2;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-group label {
+    font-weight: 700;
+    color: #4b7bec;
+    font-size: 0.9rem;
+    margin-left: 10px;
+}
+
+.kids-select, .kids-input-date {
+    padding: 10px 15px;
+    border-radius: 15px;
+    border: 2px solid white;
+    background-color: #e3e7e9;
+    color: #000;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    outline: none;
+    color: #4b6584;
+}
+
+.reset-btn {
+    background-color: #ff7675;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 50px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 0 #d63031;
+}
+
+.reset-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #d63031;
+}
+
+.student-card {
+    background-color: white;
+    border-radius: 25px;
+    margin-bottom: 15px;
+    border: 3px solid #f1f2f6;
+    overflow: hidden;
+    transition: all 0.3s;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.02);
+}
+
+.student-card.active {
+    border-color: #a2d2ff;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+}
+
+.student-header {
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background-color: white;
+}
+
+.student-header:hover {
+    background-color: #fafbfc;
+}
+
+.student-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.2rem;
+    color: #2f3542;
+}
+
+.task-count {
+    font-size: 0.9rem;
+    color: #a4b0be;
+    font-weight: 400;
+}
+
+.avatar { font-size: 1.5rem; }
+
+
+.student-content {
+    padding: 0 25px 25px 25px;
+    background-color: white;
+    animation: fadeIn 0.3s ease;
+}
+
+.stats-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.stats-table th {
+    text-align: left;
+    padding: 10px;
+    color: #4b7bec;
+    font-weight: 900;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.stats-table td {
+    background-color: #f8f9fa;
+    padding: 12px 10px;
+    color: #4b6584;
+    font-weight: 700;
+}
+
+.stats-table tr td:first-child { border-radius: 15px 0 0 15px; }
+.stats-table tr td:last-child { border-radius: 0 15px 15px 0; }
+
+.task-title-cell { color: #2f3542; }
+
+.score-badge {
+    background-color: #eee;
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+}
+
+.score-badge.high {
+    background-color: #e3fcef;
+    color: #20bf6b;
+}
+
+.stars-cell { color: #ffde59; font-size: 1.1rem; }
+.date-cell { font-size: 0.85rem; color: #a4b0be; }
+
+.no-results {
+    text-align: center;
+    color: #a4b0be;
+    padding: 20px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.loader {
+    text-align: center;
+    margin-top: 100px;
+    color: #4b7bec;
+    font-weight: 900;
+    font-size: 1.5rem;
+}

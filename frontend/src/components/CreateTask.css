@@ -1,0 +1,166 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
+.creator-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    margin-top: 80px; /* Miejsce pod navbarem */
+    font-family: 'Nunito', sans-serif;
+    background-color: #f0faff;
+    min-height: 100vh;
+}
+
+.creator-card {
+    background: white;
+    width: 100%;
+    max-width: 800px;
+    padding: 30px;
+    border-radius: 30px;
+    border: 4px solid #e0f7fa;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.creator-card h2 {
+    color: #4b7bec;
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: 900;
+}
+
+.input-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #4b6584;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-left: 10px;
+    
+}
+
+.creator-input {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border: 2px solid #d1d8e0;
+    border-radius: 15px;
+        background-color: #e3e7e9;
+    color: #000;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.creator-input:focus {
+    border-color: #4b7bec;
+}
+
+.creator-textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.input-row {
+    display: flex;
+    gap: 15px;
+}
+
+.input-half {
+    flex: 1;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-left: 10px;
+    color: #4b6584;
+    font-weight: 700;
+}
+
+/* DYNAMICZNE SEKCJE */
+.dynamic-section {
+    background-color: #f0faff;
+    padding: 20px;
+    border-radius: 20px;
+    border: 2px solid #e0f7fa;
+    margin-bottom: 20px;
+}
+
+.dynamic-section h3 {
+    color: #4b7bec;
+    margin-top: 0;
+}
+
+.question-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 20px;
+    border: 2px solid #a2d2ff;
+    margin-bottom: 20px;
+}
+
+.option-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.small-input {
+    margin-bottom: 0;
+    flex: 2;
+}
+
+.correct-label {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    color: #20bf6b;
+    font-weight: 700;
+}
+
+/* PRZYCISKI */
+.add-item-btn {
+    background-color: transparent;
+    border: 2px dashed #4b7bec;
+    color: #4b7bec;
+    padding: 8px 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+.add-main-btn {
+    background-color: #4b7bec;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 900;
+    width: 100%;
+}
+
+.submit-task-btn {
+    background-color: #20bf6b;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-weight: 900;
+    font-size: 1.1rem;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+    box-shadow: 0 5px 0 #138d4e;
+}
+
+.submit-task-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 #138d4e;
+}

@@ -44,7 +44,7 @@ function Leaderboard() {
                         </tr>
                     ))}
 
-                    {!isUserInTopTen && data.currentUserEntry && (
+                    {!isUserInTopTen && data.currentUserEntry && localStorage.getItem('role')==='STUDENT' &&(
                         <>
                             <tr className='dots-row'><td colSpan="4">...</td></tr>
                             <tr className="is-me">

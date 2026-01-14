@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../api';
+import './ClassDetails.css';
 
 function ClassDetails() {
     const { id } = useParams();
@@ -20,7 +21,7 @@ function ClassDetails() {
                 setLoading(false);
             })
             .catch(err => {
-                alert("Błąd pobierania danych");
+                console.error(err);
                 setLoading(false);
             });
     }, [id]);
@@ -29,8 +30,8 @@ function ClassDetails() {
         setExpandedStudents(prev => ({ ...prev, [username]: !prev[username] }));
     };
 
-    if (loading) return <p>Ładowanie...</p>;
-    if (!details) return <p>Błąd ładowania danych.</p>;
+    if (loading) return <div className="loader">Ładowanie statystyk klasy...</div>;
+    if (!details) return <div className="error-info">Błąd ładowania danych.</div>;
 
     const filteredStudents = details.students.map(student => {
         const filteredResults = student.taskResults.filter(res => {
@@ -46,95 +47,87 @@ function ClassDetails() {
     });
 
     return (
-        <div style={{ padding: '20px', maxWidth: '1000px', margin: '0 auto' }}>
-            <h2 style={{ color: '#000' }}>Statystyki klasy: {details.className}</h2>
+        <div className="details-container">
+            <h2 className="details-title">Statystyki klasy: {details.className}</h2>
 
-        
-            <div style={filterBarStyle}>
-                <div style={filterItem}>
+            {/* PASEK FILTRÓW */}
+            <div className="filter-bar">
+                <div className="filter-group">
                     <label>Typ zadania:</label>
-                    <select value={filterType} onChange={e => setFilterType(e.target.value)}>
+                    <select className="kids-select" value={filterType} onChange={e => setFilterType(e.target.value)}>
                         <option value="ALL">Wszystko</option>
                         <option value="QUIZ">Quizy</option>
                         <option value="COMPLETE_SENTENCE">Uzupełnianie zdań</option>
                     </select>
                 </div>
-                <div style={filterItem}>
+                <div className="filter-group">
                     <label>Od:</label>
-                    <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
+                    <input className="kids-input-date" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
                 </div>
-                <div style={filterItem}>
+                <div className="filter-group">
                     <label>Do:</label>
-                    <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
+                    <input className="kids-input-date" type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
                 </div>
-                <button onClick={() => {setFilterType('ALL'); setStartDate(''); setEndDate('');}}>Resetuj</button>
+                <button className="reset-btn" onClick={() => {setFilterType('ALL'); setStartDate(''); setEndDate('');}}>
+                    Resetuj filtry
+                </button>
             </div>
 
-            {filteredStudents.map(student => {
-                const isExpanded = expandedStudents[student.username];
-                return (
-                    <div key={student.username} style={studentCardStyle}>
-                        <div onClick={() => toggleStudent(student.username)} style={headerStyle}>
-                            <span>👤 {student.username} ({student.taskResults.length} zadań)</span>
-                            <span>{isExpanded ? '🔼' : '🔽'}</span>
-                        </div>
-
-                        {isExpanded && (
-                            <div style={{ padding: '15px' }}>
-                                {student.taskResults.length === 0 ? (
-                                    <p style={{ color: '#ddd' }}>Brak zadań spełniających kryteria filtra.</p>
-                                ) : (
-                                    <table style={tableStyle}>
-                                        <thead>
-                                            <tr style={{ backgroundColor: '#9a9a9aff' }}>
-                                                <th>Zadanie</th>
-                                                <th>Wynik</th>
-                                                <th>Gwiazdki</th>
-                                                <th>Data ukończenia</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {student.taskResults.map((res, idx) => (
-                                                <tr key={idx}>
-                                                    <td style={tdStyle}>{res.taskTitle}</td>
-                                                    <td style={tdStyle}>{res.bestScore}%</td>
-                                                    <td style={tdStyle}>⭐ {res.bestStars}</td>
-                                                    <td style={tdStyle}>{new Date(res.lastAttemptAt).toLocaleDateString()}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                )}
+            {/* LISTA UCZNIÓW */}
+            <div className="students-list">
+                {filteredStudents.map(student => {
+                    const isExpanded = expandedStudents[student.username];
+                    return (
+                        <div key={student.username} className={`student-card ${isExpanded ? 'active' : ''}`}>
+                            <div onClick={() => toggleStudent(student.username)} className="student-header">
+                                <span className="student-info">
+                                    <span className="avatar">👤</span> 
+                                    <strong>{student.username}</strong> 
+                                    <span className="task-count">({student.taskResults.length} zadań)</span>
+                                </span>
+                                <span className="arrow">{isExpanded ? '▲' : '▼'}</span>
                             </div>
-                        )}
-                    </div>
-                );
-            })}
+
+                            {isExpanded && (
+                                <div className="student-content">
+                                    {student.taskResults.length === 0 ? (
+                                        <p className="no-results">Brak zadań spełniających kryteria filtra.</p>
+                                    ) : (
+                                        <div className="table-responsive">
+                                            <table className="stats-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Zadanie</th>
+                                                        <th>Wynik</th>
+                                                        <th>Gwiazdki</th>
+                                                        <th>Data</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {student.taskResults.map((res, idx) => (
+                                                        <tr key={idx}>
+                                                            <td className="task-title-cell">{res.taskTitle}</td>
+                                                            <td className="score-cell">
+                                                                <span className={`score-badge ${res.bestScore >= 90 ? 'high' : ''}`}>
+                                                                    {res.bestScore}%
+                                                                </span>
+                                                            </td>
+                                                            <td className="stars-cell">{"⭐".repeat(res.bestStars)}</td>
+                                                            <td className="date-cell">{new Date(res.lastAttemptAt).toLocaleDateString()}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 }
-
-
-const filterBarStyle = {
-    display: 'flex',
-    gap: '20px',
-    backgroundColor: '#414141',
-    padding: '15px',
-    borderRadius: '8px',
-    marginBottom: '20px',
-    alignItems: 'flex-end',
-    flexWrap: 'wrap'
-};
-
-const filterItem = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '5px'
-};
-
-const studentCardStyle = { border: '1px solid rgb(66, 66, 66)', marginBottom: '10px', borderRadius: '8px', overflow: 'hidden', backgroundColor:'#4d4d4d', color:'#ddd' };
-const headerStyle = { padding: '10px 15px', display: 'flex', justifyContent: 'space-between', cursor: 'pointer', backgroundColor: 'rgb(61, 61, 61)' };
-const tableStyle = { width: '100%', borderCollapse: 'collapse' };
-const tdStyle = { padding: '8px', borderBottom: '1px solid #ddd' };
 
 export default ClassDetails;

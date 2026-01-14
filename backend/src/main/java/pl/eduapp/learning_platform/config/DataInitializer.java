@@ -98,7 +98,7 @@ public class DataInitializer implements CommandLineRunner {
         user2.setEmail("teacher@app.com");
         userRepository.save(user2);
         UserProfile profile2 = new UserProfile();
-        profile2.setUser(user1);
+        profile2.setUser(user2);
         profile2.setTotalPoints(0L);
         profile2.setTotalStars(0L);
         profile2.setLevel(1);
@@ -107,11 +107,11 @@ public class DataInitializer implements CommandLineRunner {
         User user3 = new User();
         user3.setUsername("student");
         user3.setPassword(passwordEncoder.encode("student123"));
-        user3.setRole("TEACHER");
+        user3.setRole("STUDENT");
         user3.setEmail("student@app.com");
         userRepository.save(user3);
         UserProfile profile3 = new UserProfile();
-        profile3.setUser(user1);
+        profile3.setUser(user3);
         profile3.setTotalPoints(0L);
         profile3.setTotalStars(0L);
         profile3.setLevel(1);

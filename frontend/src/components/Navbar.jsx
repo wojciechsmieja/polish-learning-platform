@@ -41,8 +41,11 @@ function Navbar() {
                 <>
                     <Link to="/leaderboard" className='navbarElement'>Ranking</Link>
                     <span className="stretchSpan"></span>
+                    {(userRole==='STUDENT')&&(
                     <Link to="/profile" className='navbarElement'>Mój profil</Link>
+                    )}
                     <span>Witaj, {localStorage.getItem('username')}!</span>
+
                     <button onClick={handleLogout} className='logout-btn'>Wyloguj</button>
                 </>
             )}
