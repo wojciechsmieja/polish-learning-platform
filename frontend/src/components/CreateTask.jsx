@@ -90,7 +90,7 @@ function CreateTask() {
         <div className="creator-wrapper">
             <div className="creator-card">
                 <h2>Stwórz nowe zadanie</h2>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className='create-task-form'>
                     <div className="base-info-section">
                         <label className="input-label">Tytuł zadania:</label>
                         <input
@@ -136,14 +136,15 @@ function CreateTask() {
                             onChange={e => setTask({ ...task, syntaxType: e.target.value })}
                         />
 
-                        <label className="checkbox-container">
+                        {/*<label className="checkbox-container">
                             <input
                                 type="checkbox"
                                 checked={task.publicTask}
                                 onChange={e => setTask({ ...task, publicTask: e.target.checked })}
                             />
                             <span>Publiczne zadanie</span>
-                        </label>
+                        </label>*/}
+                        <button type="submit" className="submit-task-btn">Zapisz zadanie w bazie</button>
                     </div>
 
 
@@ -234,7 +235,7 @@ function CreateTask() {
                         </div>
                     )}
 
-                    <button type="submit" className="submit-task-btn">Zapisz zadanie w bazie</button>
+                    
                 </form>
             </div>
         </div>

@@ -18,7 +18,7 @@
     padding-bottom: 15px;
 }
 
-/* FILTRY */
+
 .filter-panel {
     display: flex;
     justify-content: center;
@@ -127,7 +127,7 @@
     border-radius: 10px;
 }
 
-/* RZĄD ZADANIA */
+
 .tasks-list {
     margin-top: 5px;
     padding-left: 15px;
@@ -160,7 +160,6 @@
     margin: 5px 0;
 }
 
-/* ODZNAKI I GWIAZDKI */
 .diff-badge {
     padding: 4px 12px;
     border-radius: 50px;
@@ -185,7 +184,6 @@
 .star.gold { color: #ffde59; text-shadow: 1px 1px 0 rgba(0,0,0,0.1); }
 .star.gray { color: #d1d8e0; }
 
-/* PRZYCISK GRAJ */
 .solve-btn {
     margin-left: 1em;
     background-color: #20bf6b;

@@ -29,7 +29,7 @@ function Register() {
             setError("Twoje hasło jest za krótkie! Musi mieć przynajmniej 7 znaków.");
             return; 
         }
-        if (formData.username.trim().length < 6) {
+        if (formData.username.trim().length < 5) {
             console.log(formData.username);
         setError("Twoja nazwa jest za krótka! Napisz przynajmniej 6 znaków");
         return;
@@ -51,7 +51,13 @@ function Register() {
         } catch (error) {
             console.error("Błąd rejestracji:", error);
             const serverMessage = error.response?.data;
-            setError(typeof serverMessage === 'string' ? serverMessage : "Serwer nie odpowiada. Spróbuj później!");
+            if(serverMessage && typeof serverMessage === 'object' && serverMessage.message){
+                setError(serverMessage.message);
+            }else if(typeof serverMessage === 'string'){
+                setError(serverMessage);
+            }else{
+                setError("Wystąpił błąd podczas rejestracji");
+            }
         } finally {
             setLoading(false);
         }
@@ -124,7 +130,7 @@ function Register() {
                         disabled={loading}
                         style={loading ? { backgroundColor: '#ccc', boxShadow: 'none' } : {}}
                     >
-                        {loading ? "CZEKAJ..." : "STWÓRZ KONTO!"}
+                        {loading ? "CZEKAJ" : "STWÓRZ KONTO"}
                     </button>
                 </form>
             </div>

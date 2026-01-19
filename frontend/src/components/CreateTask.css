@@ -4,7 +4,7 @@
     display: flex;
     justify-content: center;
     padding: 20px;
-    margin-top: 80px; /* Miejsce pod navbarem */
+    margin-top: 80px; 
     font-family: 'Nunito', sans-serif;
     background-color: #f0faff;
     min-height: 100vh;
@@ -35,6 +35,55 @@
     font-size: 0.9rem;
     margin-left: 10px;
     
+}
+.create-task-form{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+.admin-filters{
+    display: flex;
+    gap: 20px;
+    background-color: #e0f7fa; 
+    padding: 20px;
+    border-radius: 30px;
+    margin-bottom: 30px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    border: 3px solid #b2ebf2;
+}
+.filter-group{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.filter-group label {
+    font-weight: 700;
+    color: #4b7bec;
+    font-size: 0.9rem;
+    margin-left: 10px;
+}
+.filter-select{
+    padding: 10px 15px;
+    border-radius: 15px;
+    border: 2px solid white;
+    background-color: #e3e7e9;
+    color: #000;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    outline: none;
+    color: #4b6584;
+}
+.filter-input{
+    padding: 10px 15px;
+    border-radius: 15px;
+    border: 2px solid white;
+    background-color: #e3e7e9;
+    color: #000;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    outline: none;
+    color: #4b6584;
 }
 
 .creator-input {
@@ -79,7 +128,6 @@
     font-weight: 700;
 }
 
-/* DYNAMICZNE SEKCJE */
 .dynamic-section {
     background-color: #f0faff;
     padding: 20px;
@@ -123,7 +171,7 @@
     font-weight: 700;
 }
 
-/* PRZYCISKI */
+
 .add-item-btn {
     background-color: transparent;
     border: 2px dashed #4b7bec;

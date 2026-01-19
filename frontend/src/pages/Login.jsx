@@ -20,8 +20,17 @@ function Login() {
             navigate('/');
             window.location.reload(); 
         } catch (error) {
-            console.log("Pełny błąd:", error.response);
-            setError(error.response?.data || "Błąd serwera");
+            console.error("Błąd rejestracji:", error);
+            const serverMessage = error.response?.data;
+            setError('Błąd logowania');
+            if(serverMessage && typeof serverMessage === 'object' && serverMessage.message){
+                setError(serverMessage.message);
+            }else if(typeof serverMessage === 'string'){
+                setError(serverMessage);
+            }else{
+                setError("Wystąpił błąd podczas rejestracji");
+            }
+
         }
     };
 

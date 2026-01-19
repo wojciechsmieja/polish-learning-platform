@@ -25,7 +25,7 @@ function TaskLeaderboard({ taskId, refreshTrigger }) {
 
     if (entries.length === 0){ return (
         <div className="sidebarStyle">
-                <h4 className='h4TaskLeaderboard'>🏆 Rekordy</h4>
+                <h4 className='h4TaskLeaderboard'>Najszybsi użytkownicy (100%)</h4>
                 <p className="sidebarStyleP">Bądź pierwszy, który ukończy to zadanie na 100%!</p>
         </div>
     )}; 

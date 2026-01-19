@@ -11,6 +11,7 @@ import java.time.OffsetDateTime;
 @Setter
 @AllArgsConstructor
 public class StudentTaskProgressDTO {
+    private Long taskId;
     private String taskTitle;
     private TaskType taskType;
     private String taskDescription;

@@ -44,6 +44,9 @@ function Navbar() {
                     {(userRole==='STUDENT')&&(
                     <Link to="/profile" className='navbarElement'>Mój profil</Link>
                     )}
+                    {(userRole==='TEACHER' || userRole==='ADMIN')&&(
+                    <Link to="/profile" className='navbarElement'>Zmień hasło</Link>
+                    )}
                     <span>Witaj, {localStorage.getItem('username')}!</span>
 
                     <button onClick={handleLogout} className='logout-btn'>Wyloguj</button>

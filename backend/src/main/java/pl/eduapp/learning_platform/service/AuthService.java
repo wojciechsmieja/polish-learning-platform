@@ -34,23 +34,23 @@ public class AuthService {
                     new UsernamePasswordAuthenticationToken(request.username(), request.password())
 
             );
-            var user = userRepository.findByUsername(request.username()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Użytkownik nie istnieje"));
+            var user = userRepository.findByUsername(request.username()).orElseThrow(()->new RuntimeException("Użytkownik nie istnieje"));
             var token = jwtService.generateToken(user);
             return new AuthResponse(token, user.getRole(), user.getUsername());
         }catch (BadCredentialsException e){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Niepoprawny login lub hasło");
+            throw new RuntimeException("Niepoprawny login lub hasło");
         }catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Błąd serwera...");
+            throw new RuntimeException( "Błąd serwera...");
         }
     }
 
     @Transactional
     public AuthResponse register(RegisterRequest request, String role) {
         if(userRepository.existsByUsername(request.getUsername())){
-            throw new RuntimeException("Username is already in use");
+            throw new RuntimeException("Nazwa użytkownika jest zajęta");
         }
         if(request.getPassword().length() < 7){
-            throw new RuntimeException("Password must be at least 7 characters");
+            throw new RuntimeException("Hasło musi mieć przynajmniej 7 znaków");
         }
         User user = new User();
         String upperRole = role.toUpperCase();
@@ -58,7 +58,7 @@ public class AuthService {
             user.setRole(upperRole);
         }
         else{
-            throw new RuntimeException("Invalid role" + upperRole);
+            throw new RuntimeException("Niezgodna rola" + upperRole);
         }
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));

@@ -24,6 +24,6 @@ public interface UserTaskAttemptRepository extends JpaRepository<UserTaskAttempt
     @Query("SELECT MAX(a.scorePercentage) FROM UserTaskAttempt a WHERE a.user = :user AND a.task = :task")
     Double findMaxScoreByUserAndTask(User user, Task task);
     //taskLeaderboard
-    @Query("SELECT new pl.eduapp.learning_platform.dto.TaskLeaderboardDTO(a.user.username, MIN(a.timeSpent)) FROM UserTaskAttempt a WHERE a.task.id = :taskId AND a.scorePercentage = 100.0 AND UPPER(a.user.role)='STUDENT' GROUP BY a.user.username ORDER BY MIN(a.timeSpent) ASC")
+    @Query("SELECT new pl.eduapp.learning_platform.dto.TaskLeaderboardDTO(a.user.username, MIN(a.timeSpent)) FROM UserTaskAttempt a WHERE a.task.id = :taskId AND a.scorePercentage = 100.0 AND UPPER(a.user.role)='STUDENT' GROUP BY a.user.username ORDER BY MIN(a.timeSpent) ASC, MIN(a.completedAt) ASC")
     List<TaskLeaderboardDTO> findTopSpeedTest(@Param("taskId") Long taskId, Pageable pageable);
 }

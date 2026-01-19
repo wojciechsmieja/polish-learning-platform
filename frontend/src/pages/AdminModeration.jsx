@@ -42,7 +42,7 @@ function AdminModeration() {
     return (
         <div className="admin-wrapper">
             <div className="admin-card">
-                <h2 className="admin-title">Panel Moderacji</h2>
+                <h2 className="admin-title">Panel oceny zadań</h2>
 
                 {pendingTasks.length === 0 ? (
                     <p className="no-tasks-info">Brak zadań do zatwierdzenia.</p>

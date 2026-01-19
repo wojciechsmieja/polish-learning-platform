@@ -28,13 +28,47 @@ public class TaskService {
 
     private void validateTask(TaskRequestDTO taskRequestDTO) {
         if(taskRequestDTO.getTaskType()==TaskType.QUIZ && (taskRequestDTO.getQuizDetails()==null || taskRequestDTO.getQuizDetails().isEmpty())){
-            throw new RuntimeException("Quiz task must have at least one question");
+            throw new RuntimeException("Quiz musi mieć chociaż jedno zadanie");
         }
         if(taskRequestDTO.getTaskType()==TaskType.COMPLETE_SENTENCE && (taskRequestDTO.getSentenceDetails()==null || taskRequestDTO.getSentenceDetails().isEmpty())){
-            throw new RuntimeException("Sentence task must have at least one sentence");
+            throw new RuntimeException("Uzupełnianie zdań musi mieć chociaż jedno zadanie");
         }
         if(taskRequestDTO.getTaskType()==TaskType.ANALYSIS && (taskRequestDTO.getAnalysisDetails()==null || taskRequestDTO.getAnalysisDetails().isEmpty())){
             throw new RuntimeException("Analysis task must have at least one item");
+        }
+        if(taskRequestDTO.getTitle()==null || taskRequestDTO.getTitle().isEmpty()){
+            throw new RuntimeException("Tytuł nie został uzupełniony");
+        }
+        if(taskRequestDTO.getDescription()==null || taskRequestDTO.getDescription().isEmpty()){
+            throw new RuntimeException("Opis nie został uzupełniony");
+        }
+        if(taskRequestDTO.getSyntaxType()==null || taskRequestDTO.getSyntaxType().isEmpty()){
+            throw new RuntimeException("Kategoria nie została uzupełniona");
+        }
+        if(taskRequestDTO.getTaskType()==TaskType.QUIZ ){
+            for (var item : taskRequestDTO.getQuizDetails()) {
+                if (item.getOptions() == null || item.getOptions().isEmpty() || item.getOptions().size() < 2) {
+                    throw new RuntimeException("Każde pytanie muszi mieć chociaż 2 odpowiedzi");
+                }
+                boolean hasCorrectOption = item.getOptions().stream()
+                        .anyMatch(opt -> Boolean.TRUE.equals(opt.getCorrectOption()));
+                if (!hasCorrectOption) {
+                    throw new RuntimeException("Pytanie: '" + item.getQuestion() + "' nie posiada poprawnej odpowiedzi");
+                }
+            }
+        }
+        if(taskRequestDTO.getTaskType()==TaskType.COMPLETE_SENTENCE ){
+            for (var item : taskRequestDTO.getSentenceDetails()) {
+                if (item.getBaseWord() == null || item.getBaseWord().isEmpty() ) {
+                    throw new RuntimeException("Uzupełnij słowa bazowe");
+                }
+                if(item.getCoveredWords()==null || item.getCoveredWords().isEmpty() ){
+                    throw new RuntimeException("Uzupełnij poprawne słowo");
+                }
+                if(item.getGrammarHint()==null || item.getGrammarHint().isEmpty() ) {
+                    throw new RuntimeException("Uzupełnij gramatyczne wskazówki");
+                }
+            }
         }
     }
 

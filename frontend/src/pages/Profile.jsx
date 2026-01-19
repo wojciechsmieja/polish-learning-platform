@@ -60,7 +60,16 @@ function Profile(){
             setIsChangingPass(false);
             setPassData({currentPassword: '', newPassword: '', confirmPassword: ''});
         }catch (err){
-            setError("Błąd: "+(err.response?.data || "Nie udało się zmienić hasła"));
+            //console.error("Błąd zmiany hasła:", error);
+            const serverMessage = error.response?.data;
+            setError('Błąd zmiany hasła');
+            if(serverMessage && typeof serverMessage === 'object' && serverMessage.message){
+                setError(serverMessage.message);
+            }else if(typeof serverMessage === 'string'){
+                setError(serverMessage);
+            }else{
+                setError("Wystąpił błąd podczas zmiany hasła");
+            }
         }
     };
 
@@ -68,66 +77,71 @@ function Profile(){
     if(!profile) return <p>Błąd ładownaia danych.</p>
     return(
         <div className="profileParent" >
-            <div className="generalInfo">
-                <h1>Profil użytkownika: {profile.username}</h1>
-                {!isEditing ? (
-                    <div className="bio">
-                        {profile.bio && (
-                            <p><em>Opis profilu: {profile.bio || "Brak opisu profilu."}</em></p>
-                        )}
-                        {!profile.bio && (<p><em>Jeszcze nie ustawiłeś opisu swojego profilu. Zmień to i napisz coś o sobie.</em></p>
-                        )}
-                        <button onClick={() => setIsEditing(true)} className="changePassBtn">Zmień opis</button>
-                    </div>                    
-                ):(
-                    <div style={{ marginTop: '10px' }}>
-                        <textarea 
-                            value={newBio} 
-                            onChange={(e) => setNewBio(e.target.value)}
-                            placeholder="Napisz coś o sobie..."
-                        />
-                        <div className="buttonsContainer">
-                            <button onClick={handleUpdateBio} className="saveBtn">Zapisz</button>
-                            <button onClick={() => setIsEditing(false)} className="cancelBtn">Anuluj</button>
+            {localStorage.getItem('role')==='STUDENT' && (
+                <div className="generalInfo">
+                    <h1>Twój profil</h1>
+                    {!isEditing ? (
+                        <div className="bio">
+                            {profile.bio && (
+                                <p><em>Opis profilu: {profile.bio || "Brak opisu profilu."}</em></p>
+                            )}
+                            {!profile.bio && (<p><em>Jeszcze nie ustawiłeś opisu swojego profilu. Zmień to i napisz coś o sobie.</em></p>
+                            )}
+                            <button onClick={() => setIsEditing(true)} className="changePassBtn">Zmień opis</button>
+                        </div>                    
+                    ):(
+                        <div style={{ marginTop: '10px' }}>
+                            <textarea 
+                                value={newBio} 
+                                onChange={(e) => setNewBio(e.target.value)}
+                                placeholder="Napisz coś o sobie..."
+                            />
+                            <div className="buttonsContainer">
+                                <button onClick={handleUpdateBio} className="saveBtn">Zapisz</button>
+                                <button onClick={() => setIsEditing(false)} className="cancelBtn">Anuluj</button>
+                            </div>
                         </div>
+                    )} 
+                </div>
+            )}
+            {localStorage.getItem('role')==='STUDENT' && (
+                <div className="userStats">
+                    <div className="statBox">
+                        <h3>Poziom</h3>
+                        <p className="statText">{profile.level}</p>
                     </div>
-                )} 
-            </div>
-
-
-            <div className="userStats">
-                <div className="statBox">
-                    <h3>Poziom</h3>
-                    <p className="statText">{profile.level}</p>
+                    <div className="statBox">
+                        <h3>Punkty XP</h3>
+                        <p className="statText">{profile.totalPoints}</p>
+                    </div>
+                    <div className="statBox">
+                        <h3>Gwiazdki</h3>
+                        <p className="statText">⭐ {profile.totalStars}</p>
+                    </div>
                 </div>
-                <div className="statBox">
-                    <h3>Punkty XP</h3>
-                    <p className="statText">{profile.totalPoints}</p>
-                </div>
-                <div className="statBox">
-                    <h3>Gwiazdki</h3>
-                    <p className="statText">⭐ {profile.totalStars}</p>
-                </div>
-            </div>
-
-            <h2>Twoje Odznaki ({profile.achievements.length})</h2>
-            <div className="achievements">
-                {profile.achievements.length > 0 ? (
-                    profile.achievements.map((ach, idx) => (
-                        <div key={idx} className="badgeCard">
-                            <div style={{ fontSize: '40px' }}>🏆</div>
-                            <h4 style={{ margin: '5px 0' }}>{ach.name}</h4>
-                            <small>{ach.description}</small>
-                        </div>
-                    ))
-                ) : (
-                    <>
-                    <p></p>
-                    <p>Nie zdobyłeś jeszcze żadnych odznak. Rozwiązuj zadania, aby je odblokować!</p>
-                    <p></p>
-                    </>
-                )}
-            </div>
+            )}
+            {localStorage.getItem('role')==='STUDENT' && (
+                <>
+                    <h2>Twoje Odznaki ({profile.achievements.length})</h2>
+                    <div className="achievements">
+                        {profile.achievements.length > 0 ? (
+                            profile.achievements.map((ach, idx) => (
+                                <div key={idx} className="badgeCard">
+                                    <div style={{ fontSize: '40px' }}>🏆</div>
+                                    <h4 style={{ margin: '5px 0' }}>{ach.name}</h4>
+                                    <small>{ach.description}</small>
+                                </div>
+                            ))
+                        ) : (
+                            <>
+                            <p></p>
+                            <p>Nie zdobyłeś jeszcze żadnych odznak. Rozwiązuj zadania, aby je odblokować!</p>
+                            <p></p>
+                            </>
+                        )}
+                    </div>
+                </>
+            )}
             <div className="profileChangePassContainer">
                 {!isChangingPass ? (
                     <>

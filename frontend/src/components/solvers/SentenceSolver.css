@@ -93,7 +93,6 @@
     color: #ff7675 !important;
 }
 
-/* Chmurka z wyjaśnieniem */
 .explanation-bubble-help {
     margin-top: 25px;
     background-color: #fff9db;
@@ -108,7 +107,6 @@
 
 .bulb { font-size: 1.4rem; margin-right: 10px; }
 
-/* Przyciski */
 .solver-actions {
     display: flex;
     justify-content: center;
@@ -152,7 +150,7 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Ekran końcowy */
+
 .finish-card {
     background: white;
     padding: 50px;

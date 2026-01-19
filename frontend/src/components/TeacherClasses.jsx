@@ -79,7 +79,7 @@ function TeacherClasses() {
             ) : (
                 <div className="teacher-classes-grid">
                     {classes.map(c => (
-                        <div key={c.id} className="teacher-class-card" onClick={() => navigate(`/teacher/classes/${c.id}/details`)}>
+                        <div key={c.id} className="teacher-class-card">
                             <div className="class-card-header">
                                 <h3>{c.name}</h3>
                                 <button 
@@ -100,7 +100,7 @@ function TeacherClasses() {
                             
                             <div className="class-card-footer">
                                 <span>👥 Uczniów: <strong>{c.memberCount}</strong></span>
-                                <span className="go-details">Szczegóły →</span>
+                                <span className="go-details" onClick={() => navigate(`/teacher/classes/${c.id}/details`)}>Szczegóły</span>
                             </div>
                         </div>
                     ))}

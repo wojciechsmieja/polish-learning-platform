@@ -16,7 +16,7 @@ function TaskPreview({ task }) {
                                 fontWeight: opt.correctOption ? 'bold' : 'normal',
                                 marginBottom: '4px'
                             }}>
-                                {opt.correctOption ? 'poprawna' : 'zła '}
+                                {opt.correctOption ? 'poprawna ' : 'zła '}
                                 {opt.optionText}
                             </li>
                         ))}

@@ -81,7 +81,7 @@ function ClassDetails() {
                         <div key={student.username} className={`student-card ${isExpanded ? 'active' : ''}`}>
                             <div onClick={() => toggleStudent(student.username)} className="student-header">
                                 <span className="student-info">
-                                    <span className="avatar">👤</span> 
+                                    <span className="avatar">Uczeń:</span> 
                                     <strong>{student.username}</strong> 
                                     <span className="task-count">({student.taskResults.length} zadań)</span>
                                 </span>
@@ -91,28 +91,29 @@ function ClassDetails() {
                             {isExpanded && (
                                 <div className="student-content">
                                     {student.taskResults.length === 0 ? (
-                                        <p className="no-results">Brak zadań spełniających kryteria filtra.</p>
+                                        <p className="no-results">Brak zadań spełniających kryteria.</p>
                                     ) : (
                                         <div className="table-responsive">
                                             <table className="stats-table">
                                                 <thead>
                                                     <tr>
                                                         <th>Zadanie</th>
+                                                        <th>Kategoria</th>
                                                         <th>Wynik</th>
-                                                        <th>Gwiazdki</th>
+                                                        
                                                         <th>Data</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {student.taskResults.map((res, idx) => (
                                                         <tr key={idx}>
+                                                            <td className="task-title-cell">#{res.taskId}</td>
                                                             <td className="task-title-cell">{res.taskTitle}</td>
                                                             <td className="score-cell">
                                                                 <span className={`score-badge ${res.bestScore >= 90 ? 'high' : ''}`}>
                                                                     {res.bestScore}%
                                                                 </span>
                                                             </td>
-                                                            <td className="stars-cell">{"⭐".repeat(res.bestStars)}</td>
                                                             <td className="date-cell">{new Date(res.lastAttemptAt).toLocaleDateString()}</td>
                                                         </tr>
                                                     ))}

@@ -47,8 +47,12 @@ function QuizSolver({ data, taskId, onFinish }) {
             const response = await api.post('/api/progress/submit', payload);
             console.log(response);
             const { scorePercentage, stars, pointsEarned, isLevelUp, newBadges } = response.data;
-
-            let message = `Wynik: ${scorePercentage}% \nGwiazdki: ${stars} \nXP: +${pointsEarned} `;
+            let message ='';
+            if(localStorage.getItem('role')){
+                message += `Wynik: ${scorePercentage}% \nGwiazdki: ${stars} \nXP: +${pointsEarned} `;
+            }else{
+                message += `Wynik: ${scorePercentage}% \n Gdybyś był zalogowany otrzymałbyś: Gwiazdki: ${stars} \nXP: +${pointsEarned} `
+            }
             if (isLevelUp) message += "\n\nUdało ci się awansować na nowy poziom!";
             
             setResult(message);
@@ -76,7 +80,7 @@ function QuizSolver({ data, taskId, onFinish }) {
                 {result && (
                     <p>{result}</p>
                 )}
-                <button onClick={() => window.location.reload()} className='nextBtn'>Zagraj jeszcze raz</button>
+                <button onClick={() => window.location.reload()} className='nextBtn'>Rozwiąż jeszcze raz</button>
             </div>
         );
     }
@@ -111,7 +115,7 @@ function QuizSolver({ data, taskId, onFinish }) {
             <div className='quiz-actions'>
                 {!isCurrentAnswerChecked ? (
                     <button onClick={handleCheckCurrentQuestion} className='checkBtn'>
-                        Sprawdź odpowiedź!
+                        Sprawdź odpowiedź
                     </button>
                 ) : (
                     <button onClick={handleNext} className='nextBtn'>

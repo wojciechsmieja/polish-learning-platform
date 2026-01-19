@@ -11,10 +11,7 @@ import pl.eduapp.learning_platform.repository.UserRepository;
 import pl.eduapp.learning_platform.repository.UserTaskAttemptRepository;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -75,6 +72,7 @@ public class SchoolClassService {
                 Long taskId = attempt.getTask().getId();
                 if (!bestResults.containsKey(taskId) || attempt.getScorePercentage() > bestResults.get(taskId).getBestScore()) {
                     bestResults.put(taskId, new StudentTaskProgressDTO(
+                            attempt.getTask().getId(),
                             attempt.getTask().getTitle(),
                             attempt.getTask().getTaskType(),
                             attempt.getTask().getDescription(),
@@ -85,7 +83,10 @@ public class SchoolClassService {
                     ));
                 }
             }
-            return new ClassStudentProgressDTO(student.getUsername(), new ArrayList<>(bestResults.values()));
+            List<StudentTaskProgressDTO> sortedResults = bestResults.values().stream()
+                    .sorted(Comparator.comparing(StudentTaskProgressDTO::getLastAttemptAt).reversed())
+                    .toList();
+            return new ClassStudentProgressDTO(student.getUsername(), sortedResults);
         }).toList();
 
         return new ClassDetailsResponse(schoolClass.getName(), studentProgress);

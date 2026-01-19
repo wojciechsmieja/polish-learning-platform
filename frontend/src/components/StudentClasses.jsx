@@ -40,8 +40,8 @@ function StudentClasses() {
             <h2 className="classes-title">Moje Klasy i Grupy</h2>
 
             <div className="join-class-box">
-                <h4>Masz tajny kod od nauczyciela?</h4>
-                <p>Wpisz go tutaj, aby dołączyć do nowej grupy:</p>
+                {/*<h4>Masz tajny kod od nauczyciela?</h4>*/}
+                <p>Wpisz kod tutaj, aby dołączyć do nowej grupy:</p>
                 {error && <div key={error} className="error-bubble">{error}</div>}
                 <form onSubmit={handleJoin} className="join-form">
                     <input 
@@ -60,7 +60,7 @@ function StudentClasses() {
             <div className="divider-line"></div>
 
             {loading ? (
-                <div className="loader">Szukamy Twoich klas...</div>
+                <div className="loader">Ładowanie Twoich klas...</div>
             ) : (
                 <div className="classes-grid">
                     {classes.length === 0 ? (

@@ -84,7 +84,7 @@ public class ProfileService {
         return new LeaderboardResponse(topTen, currentUserEntry, rank);
     }
     public void changePassword(String username, ChangePasswordRequest request){
-        User user = userRepository.findByUsername(username).orElseThrow(()-> new RuntimeException("User not found"));
+        User user = userRepository.findByUsername(username).orElseThrow(()-> new RuntimeException("Nie znaleziono użytkownika"));
         if(!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())){
             throw new RuntimeException("Obecne hasło jest nieprawidłowe");
         }

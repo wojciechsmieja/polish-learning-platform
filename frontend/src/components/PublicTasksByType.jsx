@@ -90,15 +90,16 @@ function PublicTasksByType() {
                         <option value="3">Trudne</option>
                     </select>
                 </div>
-
-                <label className="kids-checkbox-label">
-                    <input 
-                        type="checkbox" 
-                        checked={onlyUncompleted} 
-                        onChange={(e) => setOnlyUncompleted(e.target.checked)} 
-                    /> 
-                    <span>Tylko nieukończone</span>
-                </label>
+                {localStorage.getItem('role') && (
+                    <label className="kids-checkbox-label">
+                        <input 
+                            type="checkbox" 
+                            checked={onlyUncompleted} 
+                            onChange={(e) => setOnlyUncompleted(e.target.checked)} 
+                        /> 
+                        <span>Tylko nieukończone</span>
+                    </label>
+                )}
             </div>
 
             {Object.keys(groupedTasks).length === 0 ? (
@@ -127,7 +128,7 @@ function PublicTasksByType() {
                                             >
                                                 <span>{syntax}</span>
                                                 <span className="task-count">
-                                                    {isCatExpanded ? 'zwiń' : `${tasks.length} zadań`}
+                                                    {isCatExpanded ? 'zwiń' : `Liczba zadań: ${tasks.length}`}
                                                 </span>
                                             </div>
                                     
@@ -146,10 +147,12 @@ function PublicTasksByType() {
                                                                     {task.description || "Kliknij, aby rozwiązać to zadanie"}
                                                                 </p>
                                                                 
-                                                                <div className="stars-container">
-                                                                    <small>Twoje gwiazdki: </small>
-                                                                    {renderStars(task.userStars)}
-                                                                </div>
+                                                                {localStorage.getItem('role') && (
+                                                                    <div className="stars-container">
+                                                                        <small>Twoje gwiazdki: </small>
+                                                                        {renderStars(task.userStars)}
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                     
                                                             <div className="task-action">

@@ -17,7 +17,7 @@ function Leaderboard() {
 
     return (
         <div className='parent'>
-            <h2>🏆 Ranking Globalny</h2>
+            <h2>Ranking Globalny</h2>
             <table className='leaderboard-table'>
                 <thead>
                     <tr>
