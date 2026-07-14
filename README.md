@@ -33,7 +33,7 @@ Java ~ Spring Boot ~ Hibernate ~ PostgreSQL ~ React ~ Docker
 ### Guest
 
 Homepage - new users can create an account or log in, if already registered:
-<img width="875" height="682" alt="homepage" src="https://github.com/user-attachments/assets/1a49f083-12b6-4d6b-9b62-6047e37d0ad6" />
+<img width="997" height="892" alt="image" src="https://github.com/user-attachments/assets/f3dacdcd-2147-4b63-a5d7-f2017981c497" />
 
 Register page:
 <img width="450" height="687" alt="register" src="https://github.com/user-attachments/assets/4576d9a8-93ea-4553-b059-dfdec0813762" />
