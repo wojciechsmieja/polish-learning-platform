@@ -58,7 +58,7 @@ Student role  includes several additional features. Tasks are tracked and it is 
 
 Example of solving quiz:
 <p align="center">
-<img width="1011" height="649" alt="quiz solver" src="https://github.com/user-attachments/assets/bb430621-4ae5-4001-b266-72838b697ebb" />
+<img width="1810" height="805" alt="image" src="https://github.com/user-attachments/assets/90be1987-2fd8-4c83-8126-c81acb14be60" />
 </p>
 
 Example of solving sentence completion. In this type of tasks ther is always a explanation. 
@@ -66,13 +66,57 @@ Example of solving sentence completion. In this type of tasks ther is always a e
 <img width="521" height="469" alt="explenation" src="https://github.com/user-attachments/assets/1e6de7d1-65b3-40b6-bc3d-0eadf4d7f7ce" />
 </p>
 
+After finishing the task, students get feedback about the score and earned stars and points.
+<p align="center">
+<img width="1813" height="779" alt="image" src="https://github.com/user-attachments/assets/aac369c5-e41a-4dbf-8962-495cafcbd127" />
+</p>
+
 Students earn stars and points by solving tasks. All progress, including stars, points and achievements, is visible on the profile page. Achievements are awarded for meeting specific goals within the platform
 <p align="center">
-<img width="658" height="700" alt="stats" src="https://github.com/user-attachments/assets/9edc7a57-61d2-4ece-aadb-c50efafba879" />
+<img width="1354" height="944" alt="image" src="https://github.com/user-attachments/assets/312f27a8-b7d9-4a09-a5a3-c00b1b55ded6" />
+</p>
+
+Application include a sollution for connecting teachers with their students. Students can join to 'virtual classes', created by teachers, by entering a specific unique code generated for each class.
+<p align="center">
+<img width="1378" height="899" alt="image" src="https://github.com/user-attachments/assets/779c0e47-c849-4f30-add7-7d0c1bee9819" />
+</p>
+
+Platform track a global ranking. There is a separate subpage, where students can see their level, points and where they rank in the ranking. Global ranking show the best ten users, although if student's rank is for example 56, it is visible for them below ranking table.
+<p align="center">
+<img width="1388" height="946" alt="image" src="https://github.com/user-attachments/assets/8425ad07-2173-4a53-8f2a-80671d689704" />
 </p>
 
 ### Teacher
 
+Teachers can view tasks and solve them, but theirs scores are not taking into account in rankings. The main purpose of that role is that, they can create virtual classes and create new tasks on the platform.
+
+Creating new virtual class:
+<p align="center">
+<img width="1481" height="942" alt="image" src="https://github.com/user-attachments/assets/5c0d9114-ea83-400c-a782-31c5f3575f45" />
+</p>
+
+Another feature allows teachers to review the scores of students who have joined their virtual class. Teachers can also filter the results by task type and date.
+<p align="center">
+<img width="1349" height="948" alt="image" src="https://github.com/user-attachments/assets/8e208188-33c9-45b0-bcef-454dba1c202e" />
+</p>
+
+Teachers are allowed to create tasks by prepared form. They have to fill out the form and type questions and answers. Then aadmin of the platform need to accept this task to be visible and able to solve for everybody.
+<p align="center">
+<img width="1061" height="953" alt="image" src="https://github.com/user-attachments/assets/a03d29c8-b7a7-42d1-844a-cae00b050fa4" />
+</p>
+
 ### Admin
+
+This role has two main functions: moderating the visibility of tasks on the platform and approving or rejecting tasks created by teachers. Additionally, admins can create tasks that are automatically visible to users by filling out the same form available to teachers.
+
+Moderating the visuability of the tasks - here they can hide and show tasks for everybody:
+<p align="center">
+<img width="1300" height="957" alt="image" src="https://github.com/user-attachments/assets/b25c03f1-69ea-4caf-b0b8-4acc1044f056" />
+</p>
+
+Accepting or rejecting tasks - here they can review created task and decide about them:
+<p align="center">
+<img width="1333" height="953" alt="image" src="https://github.com/user-attachments/assets/6f4c451f-341d-45eb-982a-09939d076e24" />
+</p>
 
 
