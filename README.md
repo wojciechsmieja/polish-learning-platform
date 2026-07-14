@@ -32,16 +32,17 @@ Java ~ Spring Boot ~ Hibernate ~ PostgreSQL ~ React ~ Docker
 
 ### Guest
 
-Homepage - new users can create an account or log in, if already registered:
+<p>Homepage - new users can create an account or log in, if already registered:</p>
 <img width="997" height="892" alt="image" src="https://github.com/user-attachments/assets/f3dacdcd-2147-4b63-a5d7-f2017981c497" />
 
-Register page:
+<p>Register page:<br><br></p>
 <img width="450" height="687" alt="register" src="https://github.com/user-attachments/assets/4576d9a8-93ea-4553-b059-dfdec0813762" />
 
-Log in page:
+<p>Log in page:<br><br></p>
 <img width="450" height="576" alt="login" src="https://github.com/user-attachments/assets/65ca33c8-3e31-4d17-b7a2-02095bec70e5" />
-
-Having an account on the platfomr is not neccessary to start learning, but their progress is not traked. Here are two screenshots, showing two different types of tasks on the application - quizzes and sentence completion.
+<br>
+<p>
+Having an account on the platfomr is not neccessary to start learning, but their progress is not traked. Here are two screenshots, showing two different types of tasks on the application - quizzes and sentence completion.</p>
 <img width="793" height="848" alt="sentencepreview" src="https://github.com/user-attachments/assets/220449d1-4c9d-48be-afaf-af7ec6cdfeb5" />
 <img width="770" height="840" alt="quizpreview" src="https://github.com/user-attachments/assets/082f8211-82c1-482e-b056-e0f39deec829" />
 
