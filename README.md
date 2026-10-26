@@ -124,6 +124,4 @@ Accepting or rejecting tasks - here they can review created task and decide abou
 
 This project was developed as part of my Bachelor's Engineering Thesis and is published for portfolio and educational purposes.
 
-Copyright (c) 2026 Wojciech Śmieja. All rights reserved.
-
-The source code may not be copied, modified, redistributed, or used commercially without the author's prior written permission.
+This project is licensed under the MIT License. See the LICENSE file for details.
